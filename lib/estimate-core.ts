@@ -282,8 +282,10 @@ export function buildPlfsPreviewEstimate(
   const isSparse = demographic.observationCount < 30;
   const directRecordLabel =
     demographic.observationCount === 1 ? "record" : "records";
+  const backoffRecordCount = demographic.backoffObservationCount ?? 0;
+  const backoffRecordLabel = backoffRecordCount === 1 ? "record" : "records";
   const supportDescription = isBackoff
-    ? `No direct records matched. This estimate uses ${demographic.backoffObservationCount ?? 0} supporting PLFS records from broader but similar groups.`
+    ? `No direct records matched. This estimate uses ${backoffRecordCount} supporting PLFS ${backoffRecordLabel} from broader but similar groups.`
     : `${demographic.observationCount} direct PLFS ${directRecordLabel} matched.`;
   const precisionDescription = isBackoff
     ? `${supportDescription} The uncertainty range is widened to account for that modelling step.`

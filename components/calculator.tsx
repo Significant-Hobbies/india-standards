@@ -351,7 +351,7 @@ function FilterPanel({
         <div>
           <h2 id="filters-title">Shape the estimate</h2>
           <p role="status" aria-live="polite">
-            {loading ? "Querying PLFS aggregates…" : "Updated locally."}
+            {loading ? "Querying PLFS aggregates…" : "Updated from hosted aggregates."}
           </p>
         </div>
         <button
@@ -568,7 +568,7 @@ function ErrorResult({ message, retry }: { message: string; retry: () => void })
   return (
     <section className="result-canvas result-message" role="alert">
       <span className="confidence-badge confidence-badge--low">Couldn’t calculate</span>
-      <h2>The local model didn’t respond.</h2>
+      <h2>The hosted model didn’t respond.</h2>
       <p>{message}</p>
       <button className="primary-button" type="button" onClick={retry}>
         Retry estimate
@@ -807,11 +807,11 @@ function ResultCanvas({
           <div className="demo-warning">
             <h3>Preview limitation</h3>
             <p>
-              These are real PLFS-derived estimates in a local,
-              non-commercial preview. The PLFS usage scope is still under
-              review, and NFHS height access is pending, so height is not
-              available. This does not predict dating success, compatibility,
-              or whether anyone will date you.
+              These are real PLFS-derived estimates in a non-commercial
+              research preview. The PLFS usage scope is still under review, and
+              NFHS height access is pending, so height is not available. This
+              does not predict dating success, compatibility, or whether anyone
+              will date you.
             </p>
           </div>
         </div>
@@ -965,7 +965,7 @@ export function Calculator() {
         <div className="demo-callout">
           <strong>Real PLFS 2025 aggregates</strong>
           <span>
-            Local research preview. Usage scope is under review; height remains
+            Research preview. Usage scope is under review; height remains
             unavailable until NFHS access is approved.
           </span>
         </div>

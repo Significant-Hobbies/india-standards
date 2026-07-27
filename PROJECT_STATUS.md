@@ -16,8 +16,8 @@ city-level estimates, dating probability, or mutual compatibility.
 
 ## Dependencies
 
-- Next.js and React for the requested local web app.
-- DuckDB Node Neo for the embedded local analytical database.
+- Next.js and React for the web application.
+- DuckDB Node Neo for local ETL and aggregate parity tests.
 - The authorized PLFS 2025 person CSV is available as a controlled, gitignored
   local ETL input. Its aggregate-only DuckDB output powers calculator results;
   raw person records are not served.
@@ -75,14 +75,18 @@ city-level estimates, dating probability, or mutual compatibility.
   exhausted, with additional model widening. The tested ₹75 lakh cohort now
   returns a best-effort estimate rather than a fabricated exact zero.
 - 2026-07-27: Added the MotherDuck PostgreSQL runtime adapter and a Cloudflare
-  OpenNext production target; release verification is pending.
+  OpenNext production target.
+- 2026-07-27: Passed the six-gate Fleet deployment guard, deployed the
+  SHA-tagged Worker, and verified the homepage plus ₹30 lakh, ₹65 lakh, and
+  structurally backed-off ₹75 lakh estimates over HTTPS at
+  `india-numbers.significanthobbies.com`.
 
 ## Products
 
 - Standalone Next.js app at the repository root.
 - Local generated DuckDB database under `data/` (gitignored).
 - Aggregate-only MotherDuck database `india_standards`.
-- Cloudflare Worker target `india-numbers` at
+- Live Cloudflare Worker `india-numbers` at
   `india-numbers.significanthobbies.com`.
 
 ## Features (shipped)
@@ -103,12 +107,15 @@ city-level estimates, dating probability, or mutual compatibility.
 - Official-formula direct-domain PLFS intervals with an Annual Report point/RSE
   reproduction fixture; no source FSU, household, district, or person IDs are
   persisted.
-- Local PLFS-backed preview with real weighted demographic/earnings ranges,
+- PLFS-backed preview with real weighted demographic/earnings ranges,
   independent gender and age-cohort denominators, sparse back-off, range
   tightness, and no height multiplier.
 - Dense whole-lakh income thresholds through the admitted source ceiling,
   exact-income variance queries, and in-result explanations when adjacent
   cutoffs share the same sampled support.
+- Production OpenNext Worker with a custom domain, aggregate-only MotherDuck
+  queries, redacted database failures, generated binding types, and
+  version-metadata-backed homepage caching.
 
 ## Todo / Planned / Deferred / Blocked
 
@@ -116,8 +123,8 @@ city-level estimates, dating probability, or mutual compatibility.
    including an explicit policy outside its sex-specific age coverage.
 2. Planned: benchmark lossless DuckDB compaction and validated pre-aggregation
    after the official cube exists; do not reduce joint-filter fidelity.
-3. Planned: complete the guarded Cloudflare production release and HTTPS smoke
-   tests at the configured custom domain.
+3. Planned: monitor direct MotherDuck endpoint latency and connection errors
+   before deciding whether Hyperdrive is warranted.
 4. Blocked: NFHS-5 requires DHS approval. Height and fully survey-backed mode
    also require a documented PLFS usage-scope decision and an approved NFHS
    import and height model.

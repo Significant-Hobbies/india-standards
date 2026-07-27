@@ -18,7 +18,7 @@ standards. The experiment should make joint demographic rarity legible without
 pretending to predict dating success, mutual compatibility, or an individual's
 chance of meeting someone.
 
-The local MVP serves validated PLFS 2025 demographic and earnings aggregates as
+The MVP serves validated PLFS 2025 demographic and earnings aggregates as
 an explicitly limited preview. It becomes fully survey-backed only after NFHS
 height inputs and every usage-scope gate are approved and validated.
 

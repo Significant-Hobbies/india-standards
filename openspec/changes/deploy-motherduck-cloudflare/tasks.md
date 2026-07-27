@@ -20,12 +20,12 @@
 ## 4. Release
 
 - [x] 4.1 Run project tests, checks, and aggregate-data parity validation
-- [ ] 4.2 Create and push the private repository and confirm CI is green at `main`
-- [ ] 4.3 Pass the Fleet deployment guard without bypasses
-- [ ] 4.4 Store the MotherDuck token as a Cloudflare Worker secret and deploy the tagged revision
-- [ ] 4.5 Smoke-test the custom domain, metadata endpoint, and representative income thresholds
+- [x] 4.2 Create and push the private repository and confirm CI is green at `main`
+- [x] 4.3 Pass the Fleet deployment guard without bypasses
+- [x] 4.4 Store the MotherDuck token as a Cloudflare Worker secret and deploy the tagged revision
+- [x] 4.5 Smoke-test the custom domain, metadata endpoint, and representative income thresholds
 
 ## 5. Documentation
 
 - [x] 5.1 Document local ETL versus hosted serving responsibilities and secret setup
-- [ ] 5.2 Update `PROJECT_STATUS.md` with the hosted product, deployment evidence, and unresolved source limitations
+- [x] 5.2 Update `PROJECT_STATUS.md` with the hosted product, deployment evidence, and unresolved source limitations

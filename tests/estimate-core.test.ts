@@ -175,6 +175,28 @@ test("builds a PLFS-backed preview without a height model", () => {
   assert.match(result.rangePrecision.reason, /14 direct PLFS records/);
 });
 
+test("uses singular support wording for a one-record backoff", () => {
+  const result = buildPlfsPreviewEstimate(
+    { ...DEFAULT_FILTERS, minIncome: 7_500_000 },
+    {
+      observationCount: 0,
+      backoffObservationCount: 1,
+      estimate: 51.3,
+      low95: 0,
+      high95: 230,
+      mode: "hierarchical_backoff",
+      modelVersion: "plfs-zero-v1",
+      intervalMethod:
+        "PLFS analytic variance with disclosed hierarchical model widening",
+    },
+    360_000_000,
+    19_000_000,
+  );
+
+  assert.match(result.estimateBasis.reason, /1 supporting PLFS record /);
+  assert.doesNotMatch(result.estimateBasis.reason, /1 supporting PLFS records/);
+});
+
 test("height selections do not affect a PLFS-backed preview", () => {
   const aggregate = {
     observationCount: 42,
