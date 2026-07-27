@@ -1,0 +1,63 @@
+{
+  "$schema": "fleet.design-review.v1",
+  "version": 1,
+  "project": "india-standards",
+  "target": "PLFS calculator workbench and result hierarchy",
+  "mode": "preserve",
+  "register": "product",
+  "context": {
+    "product": "PRODUCT.md",
+    "design": "DESIGN.md"
+  },
+  "direction": {
+    "references": [
+      "Existing playful-white calculator workbench",
+      "Existing PLFS provenance and source boundaries",
+      "User request for impeccable design and accurate sparse estimates"
+    ],
+    "probes": [],
+    "selected": "calculator-workbench",
+    "approval": "preserve-existing-direction",
+    "before": "artifacts/design/review/before-390.png"
+  },
+  "evidence": {
+    "screenshots": [
+      {
+        "width": 390,
+        "path": "artifacts/design/review/after-390.png"
+      },
+      {
+        "width": 768,
+        "path": "artifacts/design/review/after-768.png"
+      },
+      {
+        "width": 1440,
+        "path": "artifacts/design/review/after-1440.png"
+      }
+    ],
+    "projectCheck": {
+      "command": "pnpm check",
+      "status": "pass"
+    },
+    "critique": {
+      "score": 33,
+      "maximum": 40
+    },
+    "audit": {
+      "score": 19,
+      "maximum": 20
+    },
+    "unresolved": {
+      "p0": 0,
+      "p1": 0
+    },
+    "detector": {
+      "posture": "advisory",
+      "findings": []
+    }
+  },
+  "ownerFeedback": {
+    "decision": "pending",
+    "note": "Awaiting owner keep, close, or wrong-lane decision on the preserve-mode result hierarchy."
+  }
+}

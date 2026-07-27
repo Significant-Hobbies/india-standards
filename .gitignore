@@ -1,0 +1,12 @@
+.next/
+.open-next/
+.wrangler/
+node_modules/
+data/*.duckdb
+data/*.duckdb.wal
+data/backups/
+data/sources/
+data/validation/
+.dev.vars
+.dev.vars.*
+*.tsbuildinfo

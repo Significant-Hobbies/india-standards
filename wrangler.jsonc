@@ -1,0 +1,40 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "india-numbers",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-07-27",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".open-next/assets"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "version_metadata": {
+    "binding": "CF_VERSION_METADATA"
+  },
+  "limits": {
+    "cpu_ms": 30000
+  },
+  "routes": [
+    {
+      "pattern": "india-numbers.significanthobbies.com",
+      "custom_domain": true
+    }
+  ],
+  "vars": {
+    "MOTHERDUCK_HOST": "pg.us-east-1-aws.motherduck.com",
+    "MOTHERDUCK_DATABASE": "india_standards"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "india-numbers"
+    }
+  ]
+}
