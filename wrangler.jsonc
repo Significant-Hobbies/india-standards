@@ -23,6 +23,10 @@
   },
   "routes": [
     {
+      "pattern": "india-standards.significanthobbies.com",
+      "custom_domain": true
+    },
+    {
       "pattern": "india-numbers.significanthobbies.com",
       "custom_domain": true
     }

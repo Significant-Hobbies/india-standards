@@ -1,6 +1,6 @@
 # India Standards — PROJECT STATUS
 
-Last updated: 2026-07-27
+Last updated: 2026-07-29
 
 ## Why / What
 
@@ -25,8 +25,10 @@ city-level estimates, dating probability, or mutual compatibility.
 - MotherDuck stores the 12-table aggregate-only serving database. The
   Cloudflare runtime uses its PostgreSQL-compatible endpoint with a separate
   revocable secret token.
-- OpenNext/Wrangler production configuration targets
-  `india-numbers.significanthobbies.com`. Telemetry is not included.
+- OpenNext/Wrangler production configuration targets the canonical
+  `india-standards.significanthobbies.com` hostname and retains
+  `india-numbers.significanthobbies.com` as a compatibility alias. Telemetry
+  is not included.
 
 ## Timeline
 
@@ -80,6 +82,11 @@ city-level estimates, dating probability, or mutual compatibility.
   SHA-tagged Worker, and verified the homepage plus ₹30 lakh, ₹65 lakh, and
   structurally backed-off ₹75 lakh estimates over HTTPS at
   `india-numbers.significanthobbies.com`.
+- 2026-07-29: Moved the private repository to Significant Hobbies, returned
+  its local checkout to the active Fleet workspace, and prepared
+  `india-standards.significanthobbies.com` as the canonical domain while
+  retaining the existing Worker name and hostname as internal compatibility
+  surfaces. No deployment or DNS change was performed.
 
 ## Products
 
@@ -119,12 +126,5 @@ city-level estimates, dating probability, or mutual compatibility.
 
 ## Todo / Planned / Deferred / Blocked
 
-1. Planned: import and validate NFHS-5 measured height after DHS approval,
-   including an explicit policy outside its sex-specific age coverage.
-2. Planned: benchmark lossless DuckDB compaction and validated pre-aggregation
-   after the official cube exists; do not reduce joint-filter fidelity.
-3. Planned: monitor direct MotherDuck endpoint latency and connection errors
-   before deciding whether Hyperdrive is warranted.
-4. Blocked: NFHS-5 requires DHS approval. Height and fully survey-backed mode
-   also require a documented PLFS usage-scope decision and an approved NFHS
-   import and height model.
+Future and blocked work is tracked in
+[GitHub Issues](https://github.com/Significant-Hobbies/india-standards/issues).

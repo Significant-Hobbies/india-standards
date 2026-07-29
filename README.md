@@ -6,8 +6,10 @@ validated aggregates; height remains unavailable.
 
 ## Try it
 
-Production target:
-[india-numbers.significanthobbies.com](https://india-numbers.significanthobbies.com).
+Canonical production target:
+[india-standards.significanthobbies.com](https://india-standards.significanthobbies.com).
+The existing `india-numbers.significanthobbies.com` hostname remains configured
+as a compatibility alias.
 
 For local development, requirements are Node.js 22+, pnpm 10, and a separate
 MotherDuck access token supplied as `MOTHERDUCK_TOKEN`:
