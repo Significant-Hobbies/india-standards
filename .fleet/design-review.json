@@ -54,10 +54,21 @@
     "detector": {
       "posture": "advisory",
       "findings": []
+    },
+    "browserReview": {
+      "tool": "Browser with a deterministic local aggregate fixture",
+      "viewports": [
+        390,
+        768,
+        1440
+      ],
+      "horizontalOverflow": false,
+      "consoleErrors": 0,
+      "note": "Existing responsive evidence remains valid because the visual system did not change. The remediation review verified the multi-state transition directly: selecting Women keeps the prior 15,500 Indian men response labelled as men while the updating state is visible, then atomically replaces it with 4,620 Indian women when the delayed response resolves."
     }
   },
   "ownerFeedback": {
-    "decision": "pending",
-    "note": "Awaiting owner keep, close, or wrong-lane decision on the preserve-mode result hierarchy."
+    "decision": "delegated",
+    "note": "The owner explicitly delegated preserve-lane remediation of verified P0/P1 design failures and clear regressions on 2026-07-29."
   }
 }
