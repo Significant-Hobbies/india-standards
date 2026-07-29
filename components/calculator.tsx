@@ -823,6 +823,7 @@ function ResultCanvas({
 export function Calculator() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [result, setResult] = useState<EstimateResponse | null>(null);
+  const [resultFilters, setResultFilters] = useState<EstimateFilters | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [shareStatus, setShareStatus] = useState("");
@@ -873,6 +874,7 @@ export function Calculator() {
       }
       if (currentRequest === requestId.current) {
         setResult(payload as EstimateResponse);
+        setResultFilters(nextFilters);
       }
     } catch (requestError) {
       if (currentRequest === requestId.current) {
@@ -900,8 +902,9 @@ export function Calculator() {
 
   const share = useCallback(async () => {
     if (!result) return;
-    const label = peopleLabel(filters.gender);
-    const text = `PLFS-backed 2025 preview: best estimate about ${formatCount(result.estimate.central)} ${label}; 95% uncertainty range ${formatRange(result.estimate.low, result.estimate.high)}. Filters: age ${filters.ageMin}–${filters.ageMax}, ${filters.minIncome === 0 ? "no annualized earnings minimum" : `${incomeFormatter.format(filters.minIncome)}+ annualized earnings proxy`}, ${filters.state === "all" ? "All India" : filters.state}, ${filters.area}. Range tightness ${result.rangePrecision.score}/100; higher means narrower, not more correct. Height is unavailable and not applied. PLFS usage scope is under review.`;
+    const displayedFilters = resultFilters ?? filters;
+    const label = peopleLabel(displayedFilters.gender);
+    const text = `PLFS-backed 2025 preview: best estimate about ${formatCount(result.estimate.central)} ${label}; 95% uncertainty range ${formatRange(result.estimate.low, result.estimate.high)}. Filters: age ${displayedFilters.ageMin}–${displayedFilters.ageMax}, ${displayedFilters.minIncome === 0 ? "no annualized earnings minimum" : `${incomeFormatter.format(displayedFilters.minIncome)}+ annualized earnings proxy`}, ${displayedFilters.state === "all" ? "All India" : displayedFilters.state}, ${displayedFilters.area}. Range tightness ${result.rangePrecision.score}/100; higher means narrower, not more correct. Height is unavailable and not applied. PLFS usage scope is under review.`;
     const shareData = {
       title: "India Standards PLFS-backed preview",
       text,
@@ -922,7 +925,7 @@ export function Calculator() {
       }
       setShareStatus("Could not share automatically. Copy the page URL instead.");
     }
-  }, [filters, result]);
+  }, [filters, result, resultFilters]);
 
   const resultSurface = useMemo(() => {
     if (loading && !result) return <LoadingResult />;
@@ -932,13 +935,13 @@ export function Calculator() {
     if (!result) return <LoadingResult />;
     return (
       <ResultCanvas
-        filters={filters}
+        filters={resultFilters ?? filters}
         result={result}
         share={share}
         shareStatus={shareStatus}
       />
     );
-  }, [calculate, error, filters, loading, result, share, shareStatus]);
+  }, [calculate, error, filters, loading, result, resultFilters, share, shareStatus]);
 
   return (
     <div className="app-shell">
