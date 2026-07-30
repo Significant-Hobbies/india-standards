@@ -1,0 +1,137 @@
+.page {
+  width: min(calc(100% - 40px), var(--container));
+  margin: 0 auto;
+}
+
+.hero {
+  max-width: 760px;
+  padding: 64px 0 42px;
+}
+
+.eyebrow {
+  margin-bottom: 10px;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 780;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin-bottom: 14px;
+  font-size: 2.75rem;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.lede {
+  max-width: 60ch;
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.projectLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-top: 20px;
+}
+
+.projectLinks a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary);
+  font-size: 0.88rem;
+  font-weight: 720;
+  text-decoration: none;
+}
+
+.projectLinks a:hover {
+  color: var(--primary-hover);
+}
+
+.history {
+  margin: 0;
+  padding: 0 0 72px;
+  list-style: none;
+}
+
+.release {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 24px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.release time {
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 760;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.release h2 {
+  margin-bottom: 10px;
+  font-size: 1.4rem;
+  letter-spacing: -0.025em;
+}
+
+.release ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.release li + li {
+  margin-top: 8px;
+}
+
+.note {
+  margin: 18px 0 0 156px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.homeLink {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary);
+  font-size: 0.88rem;
+  font-weight: 720;
+  text-decoration: none;
+}
+
+.homeLink:hover {
+  color: var(--primary-hover);
+}
+
+@media (max-width: 680px) {
+  .page {
+    width: min(calc(100% - 24px), var(--container));
+  }
+
+  .hero {
+    padding: 42px 0 28px;
+  }
+
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .release {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 20px;
+  }
+
+  .note {
+    margin-left: 0;
+  }
+}

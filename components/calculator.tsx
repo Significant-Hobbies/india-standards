@@ -8,6 +8,7 @@ import {
   useState,
   type ChangeEvent,
   type CSSProperties,
+  type ReactNode,
 } from "react";
 import {
   DEFAULT_FILTERS,
@@ -17,6 +18,10 @@ import {
   type EstimateResponse,
 } from "@/lib/types";
 import { parseEstimateFilters } from "@/lib/validation";
+import { TurnstileWidget } from "@/components/turnstile-widget";
+
+const TURNSTILE_SITE_KEY =
+  process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAAECKMl1ceYOkAe4q";
 
 const incomeFormatter = new Intl.NumberFormat("en-IN", {
   style: "currency",
@@ -335,10 +340,12 @@ function FilterPanel({
   filters,
   setFilters,
   loading,
+  verification,
 }: {
   filters: EstimateFilters;
   setFilters: (next: EstimateFilters) => void;
   loading: boolean;
+  verification: ReactNode;
 }) {
   const update = <K extends keyof EstimateFilters>(
     key: K,
@@ -545,6 +552,7 @@ function FilterPanel({
           </span>
         </div>
       </div>
+      <div className="filter-control">{verification}</div>
     </section>
   );
 }
@@ -828,7 +836,10 @@ export function Calculator() {
   const [loading, setLoading] = useState(true);
   const [shareStatus, setShareStatus] = useState("");
   const [resultInView, setResultInView] = useState(true);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileResetSignal, setTurnstileResetSignal] = useState(0);
   const requestId = useRef(0);
+  const lastAttemptedFilters = useRef("");
 
   useEffect(() => {
     setFilters(filtersFromSearch(window.location.search));
@@ -846,8 +857,9 @@ export function Calculator() {
     return () => observer.disconnect();
   }, []);
 
-  const calculate = useCallback(async (nextFilters: EstimateFilters) => {
+  const calculate = useCallback(async (nextFilters: EstimateFilters, token: string) => {
     const currentRequest = ++requestId.current;
+    lastAttemptedFilters.current = JSON.stringify(nextFilters);
     setLoading(true);
     setError("");
 
@@ -857,7 +869,7 @@ export function Calculator() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(nextFilters),
+        body: JSON.stringify({ filters: nextFilters, turnstileToken: token }),
       });
       const payload: unknown = await response.json();
       if (!response.ok) {
@@ -887,18 +899,23 @@ export function Calculator() {
     } finally {
       if (currentRequest === requestId.current) {
         setLoading(false);
+        setTurnstileToken(null);
+        setTurnstileResetSignal((value) => value + 1);
       }
     }
   }, []);
 
   useEffect(() => {
+    const filterKey = JSON.stringify(filters);
     const timer = window.setTimeout(() => {
       const query = filtersToSearch(filters);
       window.history.replaceState(null, "", `${window.location.pathname}?${query}`);
-      void calculate(filters);
+      if (turnstileToken && filterKey !== lastAttemptedFilters.current) {
+        void calculate(filters, turnstileToken);
+      }
     }, 180);
     return () => window.clearTimeout(timer);
-  }, [calculate, filters]);
+  }, [calculate, filters, turnstileToken]);
 
   const share = useCallback(async () => {
     if (!result) return;
@@ -930,7 +947,16 @@ export function Calculator() {
   const resultSurface = useMemo(() => {
     if (loading && !result) return <LoadingResult />;
     if (error) {
-      return <ErrorResult message={error} retry={() => void calculate(filters)} />;
+      return (
+        <ErrorResult
+          message={error}
+          retry={() => {
+            if (!turnstileToken) return;
+            lastAttemptedFilters.current = "";
+            void calculate(filters, turnstileToken);
+          }}
+        />
+      );
     }
     if (!result) return <LoadingResult />;
     return (
@@ -941,7 +967,17 @@ export function Calculator() {
         shareStatus={shareStatus}
       />
     );
-  }, [calculate, error, filters, loading, result, resultFilters, share, shareStatus]);
+  }, [
+    calculate,
+    error,
+    filters,
+    loading,
+    result,
+    resultFilters,
+    share,
+    shareStatus,
+    turnstileToken,
+  ]);
 
   return (
     <div className="app-shell">
@@ -952,6 +988,7 @@ export function Calculator() {
         </a>
         <div className="topbar-actions">
           <SourceBadge />
+          <a href="/changelog">Changelog</a>
           <a href="#methodology">How it works</a>
         </div>
       </header>
@@ -987,6 +1024,14 @@ export function Calculator() {
           filters={filters}
           setFilters={setFilters}
           loading={loading}
+          verification={
+            <TurnstileWidget
+              siteKey={TURNSTILE_SITE_KEY}
+              action="turnstile-spin-v2"
+              resetSignal={turnstileResetSignal}
+              onTokenChange={setTurnstileToken}
+            />
+          }
         />
       </div>
 
@@ -1000,6 +1045,9 @@ export function Calculator() {
         <span>PLFS Calendar Year 2025 · weighted aggregate preview</span>
         <span>Height excluded · NFHS approval pending</span>
         <span>No raw microdata leaves the server</span>
+        <a className="footer-link" href="/changelog">
+          Changelog
+        </a>
       </footer>
     </div>
   );

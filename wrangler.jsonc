@@ -33,7 +33,8 @@
   ],
   "vars": {
     "MOTHERDUCK_HOST": "pg.us-east-1-aws.motherduck.com",
-    "MOTHERDUCK_DATABASE": "india_standards"
+    "MOTHERDUCK_DATABASE": "india_standards",
+    "TURNSTILE_HOSTNAMES": "india-standards.significanthobbies.com,india-numbers.significanthobbies.com"
   },
   "services": [
     {

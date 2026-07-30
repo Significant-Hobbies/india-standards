@@ -1007,6 +1007,19 @@ footer span + span::before {
   color: var(--mango);
 }
 
+.footer-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary);
+  font-weight: 720;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: var(--primary-hover);
+}
+
 @keyframes skeleton-pulse {
   to {
     background: var(--primary-pale);
