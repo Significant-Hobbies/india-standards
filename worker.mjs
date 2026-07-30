@@ -1,5 +1,7 @@
 import openNext from "./.open-next/worker.js";
 
+import { handleAgentEdge } from "./agent-edge.mjs";
+
 export {
   BucketCachePurge,
   DOQueueHandler,
@@ -17,6 +19,9 @@ function homeCacheKey(request, versionId) {
 
 export default {
   async fetch(request, env, ctx) {
+    const agentResponse = handleAgentEdge(request);
+    if (agentResponse) return agentResponse;
+
     const url = new URL(request.url);
     if (request.method !== "GET" || url.pathname !== "/") {
       return openNext.fetch(request, env, ctx);

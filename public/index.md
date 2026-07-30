@@ -1,0 +1,16 @@
+# India Standards
+
+Evidence-bounded demographic standards calculator using aggregate Indian survey data.
+
+## Current data boundary
+
+- PLFS-backed preview with aggregate-only serving tables
+- Explicit central estimate, 95% uncertainty range, and range tightness
+- Height remains unavailable until the NFHS source and usage gates pass
+- The product does not predict dating success, compatibility, or individual outcomes
+
+## Agent entrypoints
+
+- https://india-numbers.significanthobbies.com/llms.txt
+- https://india-numbers.significanthobbies.com/api/ai
+- https://india-numbers.significanthobbies.com/index.md
