@@ -1,6 +1,6 @@
 # India Standards — PROJECT STATUS
 
-Last updated: 2026-07-29
+Last updated: 2026-07-30
 
 ## Why / What
 
@@ -32,6 +32,10 @@ city-level estimates, dating probability, or mutual compatibility.
 
 ## Timeline
 
+- 2026-07-30: Made the canonical GitHub repository publicly readable. The
+  authorized survey microdata remains local and gitignored; only the existing
+  aggregate serving boundary is hosted. No deployment, DNS, or licensing
+  change was made.
 - 2026-07-27: Product brief and calculator-workbench design direction approved;
   local implementation started.
 - 2026-07-27: Local DuckDB experiment completed with a synthetic-only accuracy
@@ -91,6 +95,8 @@ city-level estimates, dating probability, or mutual compatibility.
 ## Products
 
 - Standalone Next.js app at the repository root.
+- [Public GitHub repository](https://github.com/Significant-Hobbies/india-standards)
+  with its [Roadmap](https://github.com/Significant-Hobbies/india-standards/issues).
 - Local generated DuckDB database under `data/` (gitignored).
 - Aggregate-only MotherDuck database `india_standards`.
 - Live Cloudflare Worker `india-numbers` at
