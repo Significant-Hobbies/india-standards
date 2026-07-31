@@ -33,8 +33,10 @@ city-level estimates, dating probability, or mutual compatibility.
 ## Timeline
 
 - 2026-07-31: Prepared and locally verified public agent discovery for the
-  aggregate-only calculator and changelog; person-level survey data remains
-  excluded and production deployment remains separate.
+  aggregate-only calculator and changelog, with request-origin catalogs,
+  sitemaps, robots declarations, and Markdown on both public hostnames;
+  person-level survey data remains excluded and production deployment remains
+  separate.
 - 2026-07-30: Made the canonical GitHub repository publicly readable. The
   authorized survey microdata remains local and gitignored; only the existing
   aggregate serving boundary is hosted. No deployment, DNS, or licensing
