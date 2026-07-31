@@ -999,7 +999,8 @@ export function Calculator() {
           <h1>How rare are your standards?</h1>
           <p>
             Explore a demographic estimate for India—without pretending it is a
-            dating prediction.
+            dating prediction. The calculator joins your selected filters
+            before estimating the weighted population range.
           </p>
         </div>
         <div className="demo-callout">
