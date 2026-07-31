@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://india-numbers.significanthobbies.com/sitemap.xml
+Sitemap: https://india-standards.significanthobbies.com/sitemap.xml
 # Agent indexing
 Allow: /llms.txt
 Allow: /llms-full.txt

@@ -1,11 +1,11 @@
 {
   "name": "India Standards",
   "version": "1",
-  "url": "https://india-numbers.significanthobbies.com",
-  "llms": "https://india-numbers.significanthobbies.com/llms.txt",
-  "llmsFull": "https://india-numbers.significanthobbies.com/llms-full.txt",
-  "sitemap": "https://india-numbers.significanthobbies.com/sitemap.xml",
-  "robots": "https://india-numbers.significanthobbies.com/robots.txt",
+  "url": "https://india-standards.significanthobbies.com",
+  "llms": "https://india-standards.significanthobbies.com/llms.txt",
+  "llmsFull": "https://india-standards.significanthobbies.com/llms-full.txt",
+  "sitemap": "https://india-standards.significanthobbies.com/sitemap.xml",
+  "robots": "https://india-standards.significanthobbies.com/robots.txt",
   "markdown": {
     "suffix": ".md",
     "negotiation": true
@@ -13,15 +13,15 @@
   "surfaces": [
     {
       "id": "home",
-      "url": "https://india-numbers.significanthobbies.com/",
-      "md": "https://india-numbers.significanthobbies.com/index.md",
+      "url": "https://india-standards.significanthobbies.com/",
+      "md": "https://india-standards.significanthobbies.com/index.md",
       "kind": "static",
       "description": "Product home"
     },
     {
       "id": "changelog",
-      "url": "https://india-numbers.significanthobbies.com/changelog",
-      "md": "https://india-numbers.significanthobbies.com/changelog.md",
+      "url": "https://india-standards.significanthobbies.com/changelog",
+      "md": "https://india-standards.significanthobbies.com/changelog.md",
       "kind": "static",
       "description": "Verified product releases"
     }

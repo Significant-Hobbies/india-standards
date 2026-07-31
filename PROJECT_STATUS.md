@@ -36,6 +36,9 @@ city-level estimates, dating probability, or mutual compatibility.
   `india-standards.significanthobbies.com`, including structured product data
   and the approved calculator-workbench preview; retained
   `india-numbers.significanthobbies.com` as a compatibility hostname.
+- 2026-07-31: Aligned the public sitemap, robots declaration, agent catalog,
+  and Markdown discovery files with the canonical
+  `india-standards.significanthobbies.com` hostname.
 - 2026-07-31: Benchmarked the complete official aggregate serving cube against
   a full-schema index-free copy. The candidate preserved all 12 table schemas,
   row counts, and 46 deterministic estimator fixtures while reducing the local

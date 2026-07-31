@@ -11,6 +11,6 @@ Evidence-bounded demographic standards calculator using aggregate Indian survey 
 
 ## Agent entrypoints
 
-- https://india-numbers.significanthobbies.com/llms.txt
-- https://india-numbers.significanthobbies.com/api/ai
-- https://india-numbers.significanthobbies.com/index.md
+- https://india-standards.significanthobbies.com/llms.txt
+- https://india-standards.significanthobbies.com/api/ai
+- https://india-standards.significanthobbies.com/index.md
