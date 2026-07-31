@@ -32,6 +32,10 @@ city-level estimates, dating probability, or mutual compatibility.
 
 ## Timeline
 
+- 2026-07-31: Published canonical search and social metadata for
+  `india-standards.significanthobbies.com`, including structured product data
+  and the approved calculator-workbench preview; retained
+  `india-numbers.significanthobbies.com` as a compatibility hostname.
 - 2026-07-31: Benchmarked the complete official aggregate serving cube against
   a full-schema index-free copy. The candidate preserved all 12 table schemas,
   row counts, and 46 deterministic estimator fixtures while reducing the local
