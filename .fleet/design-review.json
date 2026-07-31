@@ -40,7 +40,7 @@
       "status": "pass"
     },
     "critique": {
-      "score": 33,
+      "score": 36,
       "maximum": 40
     },
     "audit": {
@@ -62,9 +62,14 @@
         768,
         1440
       ],
+      "controlScreenshots": [
+        "artifacts/design/review/controls-after-390.png",
+        "artifacts/design/review/controls-after-768.png",
+        "artifacts/design/review/controls-after-1440.png"
+      ],
       "horizontalOverflow": false,
       "consoleErrors": 0,
-      "note": "Existing responsive evidence remains valid because the visual system did not change. The remediation review verified the multi-state transition directly: selecting Women keeps the prior 15,500 Indian men response labelled as men while the updating state is visible, then atomically replaces it with 4,620 Indian women when the delayed response resolves."
+      "note": "The result screenshots preserve the deterministic aggregate states, while fresh control screenshots cover the changed workbench at 390, 768, and 1440 pixels. Browser review found no horizontal overflow or undersized visible buttons; direct age fields are labelled 44-pixel controls, invalid shared filters announce their recovery, and the compact verification row states its purpose. No first-party console error was observed; challenge-frame diagnostics are isolated to Cloudflare Turnstile."
     }
   },
   "ownerFeedback": {
