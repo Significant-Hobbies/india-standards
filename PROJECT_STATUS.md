@@ -32,6 +32,12 @@ city-level estimates, dating probability, or mutual compatibility.
 
 ## Timeline
 
+- 2026-07-31: Benchmarked the complete official aggregate serving cube against
+  a full-schema index-free copy. The candidate preserved all 12 table schemas,
+  row counts, and 46 deterministic estimator fixtures while reducing the local
+  DuckDB file from 55.76 MiB to 18.26 MiB. Local median, mean, and p95 latency
+  stayed within 0.5 ms across 216 samples per candidate; the current local and
+  hosted cubes remain unchanged pending direct MotherDuck latency evidence.
 - 2026-07-31: Prepared and locally verified public agent discovery for the
   aggregate-only calculator and changelog, with request-origin catalogs,
   sitemaps, robots declarations, and Markdown on both public hostnames;
