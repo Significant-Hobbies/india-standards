@@ -1,6 +1,6 @@
 # India Standards — PROJECT STATUS
 
-Last updated: 2026-07-30
+Last updated: 2026-07-31
 
 ## Why / What
 
@@ -32,6 +32,9 @@ city-level estimates, dating probability, or mutual compatibility.
 
 ## Timeline
 
+- 2026-07-31: Expanded PLFS and NFHS in visible calculator copy, made malformed
+  shared-link fallback explicit with a direct filter-review action, and
+  refreshed normal and recovery evidence at 390px, 768px, and 1440px.
 - 2026-07-31: Prepared and locally verified public agent discovery for the
   aggregate-only calculator and changelog, with request-origin catalogs,
   sitemaps, robots declarations, and Markdown on both public hostnames;

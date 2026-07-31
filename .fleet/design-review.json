@@ -35,12 +35,26 @@
         "path": "artifacts/design/review/after-1440.png"
       }
     ],
+    "recoveryScreenshots": [
+      {
+        "width": 390,
+        "path": "artifacts/design/review/invalid-link-390.png"
+      },
+      {
+        "width": 768,
+        "path": "artifacts/design/review/invalid-link-768.png"
+      },
+      {
+        "width": 1440,
+        "path": "artifacts/design/review/invalid-link-1440.png"
+      }
+    ],
     "projectCheck": {
       "command": "pnpm check",
       "status": "pass"
     },
     "critique": {
-      "score": 33,
+      "score": 36,
       "maximum": 40
     },
     "audit": {
@@ -64,7 +78,7 @@
       ],
       "horizontalOverflow": false,
       "consoleErrors": 0,
-      "note": "Existing responsive evidence remains valid because the visual system did not change. The remediation review verified the multi-state transition directly: selecting Women keeps the prior 15,500 Indian men response labelled as men while the updating state is visible, then atomically replaces it with 4,620 Indian women when the delayed response resolves."
+      "note": "Normal and malformed shared-link states were inspected at every required width with deterministic aggregate fixtures. Periodic Labour Force Survey (PLFS) and National Family Health Survey (NFHS) are expanded in visible copy. Invalid shared filters restore safe defaults with an explicit status and a Review filters link that lands on the filter heading. Both states have no horizontal overflow or console errors."
     }
   },
   "ownerFeedback": {
