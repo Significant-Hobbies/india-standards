@@ -96,7 +96,10 @@ function filtersToSearch(filters: EstimateFilters) {
 function filtersFromSearch(search: string) {
   const params = new URLSearchParams(search);
   if (!params.size) {
-    return { filters: DEFAULT_FILTERS, invalid: false };
+    return {
+      filters: DEFAULT_FILTERS,
+      usedFallback: false,
+    };
   }
 
   try {
@@ -113,10 +116,13 @@ function filtersFromSearch(search: string) {
         heightMin: Number(params.get("heightMin") ?? DEFAULT_FILTERS.heightMin),
         heightMax: Number(params.get("heightMax") ?? DEFAULT_FILTERS.heightMax),
       }),
-      invalid: false,
+      usedFallback: false,
     };
   } catch {
-    return { filters: DEFAULT_FILTERS, invalid: true };
+    return {
+      filters: DEFAULT_FILTERS,
+      usedFallback: true,
+    };
   }
 }
 
@@ -902,7 +908,7 @@ export function Calculator() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [shareStatus, setShareStatus] = useState("");
-  const [filterNotice, setFilterNotice] = useState("");
+  const [usedSharedLinkFallback, setUsedSharedLinkFallback] = useState(false);
   const [resultInView, setResultInView] = useState(true);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileResetSignal, setTurnstileResetSignal] = useState(0);
@@ -910,18 +916,9 @@ export function Calculator() {
   const lastAttemptedFilters = useRef("");
 
   useEffect(() => {
-    const parsed = filtersFromSearch(window.location.search);
-    setFilters(parsed.filters);
-    if (parsed.invalid) {
-      setFilterNotice(
-        "Some shared filters were invalid, so the defaults were restored.",
-      );
-    }
-  }, []);
-
-  const updateFilters = useCallback((next: EstimateFilters) => {
-    setFilterNotice("");
-    setFilters(next);
+    const initialState = filtersFromSearch(window.location.search);
+    setFilters(initialState.filters);
+    setUsedSharedLinkFallback(initialState.usedFallback);
   }, []);
 
   useEffect(() => {
@@ -1083,14 +1080,18 @@ export function Calculator() {
           </p>
         </div>
         <div className="demo-callout">
-          <strong>
-            Real Periodic Labour Force Survey (PLFS) 2025 aggregates
-          </strong>
+          <strong>Real 2025 labour-force survey data</strong>
           <span>
-            Research preview. Usage scope is under review; height remains
-            unavailable until National Family Health Survey (NFHS) access is
-            approved.
+            From India’s Periodic Labour Force Survey (PLFS). Usage scope is
+            under review; height awaits National Family Health Survey (NFHS)
+            access.
           </span>
+          {usedSharedLinkFallback && (
+            <span role="status">
+              Shared link adjusted: unsupported filters were replaced with safe
+              defaults. <a href="#filters-title">Review filters</a>.
+            </span>
+          )}
         </div>
       </section>
 

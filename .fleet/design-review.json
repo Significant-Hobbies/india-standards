@@ -35,6 +35,20 @@
         "path": "artifacts/design/review/after-1440.png"
       }
     ],
+    "recoveryScreenshots": [
+      {
+        "width": 390,
+        "path": "artifacts/design/review/invalid-link-390.png"
+      },
+      {
+        "width": 768,
+        "path": "artifacts/design/review/invalid-link-768.png"
+      },
+      {
+        "width": 1440,
+        "path": "artifacts/design/review/invalid-link-1440.png"
+      }
+    ],
     "projectCheck": {
       "command": "pnpm check",
       "status": "pass"
@@ -69,7 +83,7 @@
       ],
       "horizontalOverflow": false,
       "consoleErrors": 0,
-      "note": "The result screenshots preserve the deterministic aggregate states, while fresh control screenshots cover the changed workbench at 390, 768, and 1440 pixels. Browser review found no horizontal overflow or undersized visible buttons; direct age fields are labelled 44-pixel controls, invalid shared filters announce their recovery, and the compact verification row states its purpose. No first-party console error was observed; challenge-frame diagnostics are isolated to Cloudflare Turnstile."
+      "note": "Normal and malformed shared-link states were inspected at every required width with deterministic aggregate fixtures. Periodic Labour Force Survey (PLFS) and National Family Health Survey (NFHS) are expanded in visible copy. Invalid shared filters restore safe defaults with an explicit status and a Review filters link that lands on the filter heading. Both states have no horizontal overflow or console errors."
     }
   },
   "ownerFeedback": {
