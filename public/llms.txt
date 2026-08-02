@@ -4,11 +4,11 @@
 
 ## Product
 
-- [Home](https://india-numbers.significanthobbies.com/): Demographic standards calculator
-- [Changelog](https://india-numbers.significanthobbies.com/changelog): Verified product releases
+- [Home](https://india-standards.significanthobbies.com/): Demographic standards calculator
+- [Changelog](https://india-standards.significanthobbies.com/changelog): Verified product releases
 
 ## Machine surfaces
 
-- [Agent catalog](https://india-numbers.significanthobbies.com/api/ai): JSON inventory of public surfaces
-- [Homepage markdown](https://india-numbers.significanthobbies.com/index.md): Product brief without JS
-- [This index](https://india-numbers.significanthobbies.com/llms.txt)
+- [Agent catalog](https://india-standards.significanthobbies.com/api/ai): JSON inventory of public surfaces
+- [Homepage markdown](https://india-standards.significanthobbies.com/index.md): Product brief without JS
+- [This index](https://india-standards.significanthobbies.com/llms.txt)

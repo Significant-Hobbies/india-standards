@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { handleAgentEdge } from "../agent-edge.mjs";
+import { AGENT_SURFACE, handleAgentEdge } from "../agent-edge.mjs";
 
 const ORIGINS = [
   "https://india-standards.significanthobbies.com",
@@ -47,3 +48,29 @@ for (const origin of ORIGINS) {
     assert.match(await robots.text(), new RegExp(`Sitemap: ${origin}/sitemap\\.xml`));
   });
 }
+
+test("ships canonical same-host static sitemap and robots fallbacks", async () => {
+  assert.equal(
+    AGENT_SURFACE.url,
+    "https://india-standards.significanthobbies.com",
+  );
+
+  const [sitemap, robots] = await Promise.all([
+    readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8"),
+    readFile(new URL("../public/robots.txt", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(
+    sitemap,
+    /<loc>https:\/\/india-standards\.significanthobbies\.com\/<\/loc>/,
+  );
+  assert.match(
+    sitemap,
+    /<loc>https:\/\/india-standards\.significanthobbies\.com\/changelog<\/loc>/,
+  );
+  assert.doesNotMatch(sitemap, /india-numbers\.significanthobbies\.com/);
+  assert.match(
+    robots,
+    /Sitemap: https:\/\/india-standards\.significanthobbies\.com\/sitemap\.xml/,
+  );
+});

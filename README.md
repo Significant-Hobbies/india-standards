@@ -90,6 +90,18 @@ high-income estimates:
 MOTHERDUCK_TOKEN=... pnpm data:verify:motherduck
 ```
 
+The reproducible local compaction benchmark compares the complete indexed cube
+with a full-schema index-free copy and fails on schema, row-count, or estimator
+drift:
+
+```bash
+pnpm data:benchmark:compaction -- \
+  --database data/india-standards.official.staging.duckdb
+```
+
+The retained result and adoption decision are documented in
+[the serving-cube compaction audit](docs/knowledge/audits/serving-cube-compaction.md).
+
 Sources:
 
 - [PLFS 2025 catalog and data dictionary](https://microdata.gov.in/NADA/index.php/catalog/284/data-dictionary/F2)

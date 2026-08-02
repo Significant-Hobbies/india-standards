@@ -273,7 +273,7 @@ function SourceBadge() {
   return (
     <span className="source-badge">
       <Icon name="database" />
-      PLFS-backed preview · 2025 · height unavailable
+      PLFS 2025 preview · height unavailable
     </span>
   );
 }
@@ -299,6 +299,8 @@ function RangeControl({
   onMinimum: (value: number) => void;
   onMaximum: (value: number) => void;
 }) {
+  const fieldName = label.toLowerCase().replaceAll(" ", "-");
+
   return (
     <div className="filter-control filter-control--range">
       <div className="filter-label">
@@ -311,16 +313,51 @@ function RangeControl({
         ) : null}
       </div>
       <div className="range-values">
-        <output>{minValue}</output>
+        <label className="range-number-field">
+          <span>Min</span>
+          <input
+            aria-label={`Minimum ${label.toLowerCase()}`}
+            id={`${fieldName}-minimum-number`}
+            name={`${fieldName}-minimum-number`}
+            type="number"
+            min={minimum}
+            max={maxValue}
+            value={minValue}
+            onChange={(event) => {
+              const value = Number(event.target.value);
+              if (Number.isFinite(value)) {
+                onMinimum(Math.max(minimum, Math.min(value, maxValue)));
+              }
+            }}
+          />
+        </label>
         <span aria-hidden="true">—</span>
-        <output>
-          {maxValue} {unit}
-        </output>
+        <label className="range-number-field">
+          <span>Max</span>
+          <input
+            aria-label={`Maximum ${label.toLowerCase()}`}
+            id={`${fieldName}-maximum-number`}
+            name={`${fieldName}-maximum-number`}
+            type="number"
+            min={minValue}
+            max={maximum}
+            value={maxValue}
+            onChange={(event) => {
+              const value = Number(event.target.value);
+              if (Number.isFinite(value)) {
+                onMaximum(Math.min(maximum, Math.max(value, minValue)));
+              }
+            }}
+          />
+        </label>
+        <span className="range-unit">{unit}</span>
       </div>
       <div className="paired-ranges">
         <label>
           <span className="sr-only">Minimum {label.toLowerCase()}</span>
           <input
+            id={`${fieldName}-minimum-range`}
+            name={`${fieldName}-minimum-range`}
             type="range"
             min={minimum}
             max={maximum}
@@ -333,6 +370,8 @@ function RangeControl({
         <label>
           <span className="sr-only">Maximum {label.toLowerCase()}</span>
           <input
+            id={`${fieldName}-maximum-range`}
+            name={`${fieldName}-maximum-range`}
             type="range"
             min={minimum}
             max={maximum}
@@ -351,11 +390,13 @@ function FilterPanel({
   filters,
   setFilters,
   loading,
+  notice,
   verification,
 }: {
   filters: EstimateFilters;
   setFilters: (next: EstimateFilters) => void;
   loading: boolean;
+  notice: string;
   verification: ReactNode;
 }) {
   const update = <K extends keyof EstimateFilters>(
@@ -369,7 +410,10 @@ function FilterPanel({
         <div>
           <h2 id="filters-title">Shape the estimate</h2>
           <p role="status" aria-live="polite">
-            {loading ? "Querying PLFS aggregates…" : "Updated from hosted aggregates."}
+            {notice ||
+              (loading
+                ? "Querying PLFS aggregates…"
+                : "Updated from hosted aggregates.")}
           </p>
         </div>
         <button
@@ -428,6 +472,8 @@ function FilterPanel({
           </strong>
           <input
             aria-label="Minimum annual earned income"
+            id="minimum-annual-earned-income"
+            name="minimum-annual-earned-income"
             type="range"
             min={0}
             max={INCOME_THRESHOLDS.length - 1}
@@ -557,13 +603,29 @@ function FilterPanel({
             <span>Height</span>
             <span className="modelled-label">Not applied</span>
           </div>
-          <strong className="unavailable-title">Waiting for NFHS approval</strong>
+          <strong className="unavailable-title">
+            Waiting for NFHS approval
+          </strong>
           <span className="control-hint">
-            Height is excluded from this PLFS-only estimate.
+            Height is excluded until National Family Health Survey (NFHS)
+            access is approved.
           </span>
         </div>
       </div>
-      <div className="filter-control">{verification}</div>
+      <div className="filter-control verification-control">
+        <div>
+          <div className="filter-label">
+            <span className="filter-icon">
+              <Icon name="info" />
+            </span>
+            Human verification
+          </div>
+          <span className="control-hint">
+            Complete the check once to calculate and refresh estimates.
+          </span>
+        </div>
+        {verification}
+      </div>
     </section>
   );
 }
@@ -1013,7 +1075,8 @@ export function Calculator() {
           <h1>How rare are your standards?</h1>
           <p>
             Explore a demographic estimate for India—without pretending it is a
-            dating prediction.
+            dating prediction. The calculator joins your selected filters
+            before estimating the weighted population range.
           </p>
         </div>
         <div className="demo-callout">
@@ -1043,8 +1106,9 @@ export function Calculator() {
         </div>
         <FilterPanel
           filters={filters}
-          setFilters={setFilters}
+          setFilters={updateFilters}
           loading={loading}
+          notice={filterNotice}
           verification={
             <TurnstileWidget
               siteKey={TURNSTILE_SITE_KEY}

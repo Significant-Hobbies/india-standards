@@ -12,7 +12,7 @@
 // biome-ignore format: generated payload from apply-agent-surfaces (JSON keys/quotes)
 export const AGENT_SURFACE = {
   "name": "India Standards",
-  "url": "https://india-numbers.significanthobbies.com",
+  "url": "https://india-standards.significanthobbies.com",
   "llmsFullTxt": "# India Standards — full agent brief\n\nEvidence-bounded demographic standards calculator using aggregate Indian survey data.\n\n## Index\n\n# India Standards\n\nEvidence-bounded demographic standards calculator using aggregate Indian survey data.\n\n## Current data boundary\n\n- PLFS-backed preview with aggregate-only serving tables\n- Explicit central estimate, 95% uncertainty range, and range tightness\n- Height remains unavailable until the NFHS source and usage gates pass\n- The product does not predict dating success, compatibility, or individual outcomes\n\n## Agent entrypoints\n\n- https://india-numbers.significanthobbies.com/llms.txt\n- https://india-numbers.significanthobbies.com/api/ai\n- https://india-numbers.significanthobbies.com/index.md\n\n## Product links\n\n- Home: https://india-numbers.significanthobbies.com/ — Demographic standards calculator\n- Changelog: https://india-numbers.significanthobbies.com/changelog — Verified product releases\n\n## Machine surfaces\n\n- https://india-numbers.significanthobbies.com/llms.txt\n- https://india-numbers.significanthobbies.com/llms-full.txt\n- https://india-numbers.significanthobbies.com/api/ai\n- https://india-numbers.significanthobbies.com/index.md\n- https://india-numbers.significanthobbies.com/sitemap.xml\n- https://india-numbers.significanthobbies.com/robots.txt\n\n## Contact\n\n- Owner: https://sarthakagrawal.dev\n- Agent email for directory verification: sarthakagrawal@agentmail.to\n",
   "llmsTxt": "# India Standards\n\n> Evidence-bounded demographic standards calculator using aggregate Indian survey data.\n\n## Product\n\n- [Home](https://india-numbers.significanthobbies.com/): Demographic standards calculator\n- [Changelog](https://india-numbers.significanthobbies.com/changelog): Verified product releases\n\n## Machine surfaces\n\n- [Agent catalog](https://india-numbers.significanthobbies.com/api/ai): JSON inventory of public surfaces\n- [Homepage markdown](https://india-numbers.significanthobbies.com/index.md): Product brief without JS\n- [This index](https://india-numbers.significanthobbies.com/llms.txt)\n",
   "indexMd": "# India Standards\n\nEvidence-bounded demographic standards calculator using aggregate Indian survey data.\n\n## Current data boundary\n\n- PLFS-backed preview with aggregate-only serving tables\n- Explicit central estimate, 95% uncertainty range, and range tightness\n- Height remains unavailable until the NFHS source and usage gates pass\n- The product does not predict dating success, compatibility, or individual outcomes\n\n## Agent entrypoints\n\n- https://india-numbers.significanthobbies.com/llms.txt\n- https://india-numbers.significanthobbies.com/api/ai\n- https://india-numbers.significanthobbies.com/index.md\n",
@@ -107,7 +107,11 @@ function catalogForOrigin(origin) {
 }
 
 function forOrigin(value, origin) {
-  return String(value).split(AGENT_SURFACE.url).join(origin);
+  return String(value)
+    .split(AGENT_SURFACE.url)
+    .join(origin)
+    .split('https://india-numbers.significanthobbies.com')
+    .join(origin);
 }
 
 function sitemapForCatalog(catalog) {

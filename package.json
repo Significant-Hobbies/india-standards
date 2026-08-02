@@ -9,6 +9,7 @@
     "start": "next start",
     "db:seed": "node scripts/seed-demo-db.mjs",
     "data:stage:plfs": "node scripts/import-plfs-2025.mjs",
+    "data:benchmark:compaction": "node scripts/benchmark-serving-cube-compaction.mjs",
     "data:verify:motherduck": "node scripts/verify-motherduck.mjs",
     "build:cf": "opennextjs-cloudflare build",
     "preview:cf": "pnpm build:cf && opennextjs-cloudflare preview",

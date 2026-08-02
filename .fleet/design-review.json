@@ -76,6 +76,11 @@
         768,
         1440
       ],
+      "controlScreenshots": [
+        "artifacts/design/review/controls-after-390.png",
+        "artifacts/design/review/controls-after-768.png",
+        "artifacts/design/review/controls-after-1440.png"
+      ],
       "horizontalOverflow": false,
       "consoleErrors": 0,
       "note": "Normal and malformed shared-link states were inspected at every required width with deterministic aggregate fixtures. Periodic Labour Force Survey (PLFS) and National Family Health Survey (NFHS) are expanded in visible copy. Invalid shared filters restore safe defaults with an explicit status and a Review filters link that lands on the filter heading. Both states have no horizontal overflow or console errors."
