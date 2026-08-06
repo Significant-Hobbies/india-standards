@@ -1106,9 +1106,9 @@ export function Calculator() {
         </div>
         <FilterPanel
           filters={filters}
-          setFilters={updateFilters}
+          setFilters={setFilters}
           loading={loading}
-          notice={filterNotice}
+          notice=""
           verification={
             <TurnstileWidget
               siteKey={TURNSTILE_SITE_KEY}
