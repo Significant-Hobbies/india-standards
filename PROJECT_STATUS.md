@@ -1,6 +1,6 @@
 # India Standards — PROJECT STATUS
 
-Last updated: 2026-07-31
+Last updated: 2026-08-09
 
 ## Why / What
 
@@ -32,6 +32,10 @@ city-level estimates, dating probability, or mutual compatibility.
 
 ## Timeline
 
+- 2026-08-09: Adopted the shared Ultracite lint baseline for the Next.js app;
+  37 applicable source and configuration files pass with zero diagnostics via
+  explicit compatibility rules, without touching survey data, generated
+  bindings, runtime behavior, or deployment configuration.
 - 2026-07-31: Expanded PLFS and NFHS in visible calculator copy, made malformed
   shared-link fallback explicit with a direct filter-review action, and
   refreshed normal and recovery evidence at 390px, 768px, and 1440px.
@@ -137,6 +141,7 @@ city-level estimates, dating probability, or mutual compatibility.
 - Production OpenNext Worker with a custom domain, aggregate-only MotherDuck
   queries, redacted database failures, generated binding types, and
   version-metadata-backed homepage caching.
+- Shared Ultracite lint baseline with a clean 37-file check.
 
 ## Todo / Planned / Deferred / Blocked
 

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.5/schema.json",
+  "extends": [
+    "ultracite/biome/core",
+    "ultracite/biome/react",
+    "ultracite/biome/next",
+    "ultracite/biome/vitest"
+  ],
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "!**/.next",
+      "!**/.open-next",
+      "!**/.wrangler",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/cloudflare-env.d.ts",
+      "!**/next-env.d.ts",
+      "!**/pnpm-lock.yaml",
+      "!data",
+      "!public",
+      "!artifacts"
+    ]
+  },
+  "formatter": { "enabled": false },
+  "json": { "formatter": { "enabled": false } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "a11y": { "useAriaPropsSupportedByRole": "off" },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "off",
+        "noVoid": "off",
+        "useSimplifiedLogicExpression": "off"
+      },
+      "correctness": {
+        "noUnusedFunctionParameters": "off",
+        "noUnusedImports": "off",
+        "noUnusedVariables": "off"
+      },
+      "performance": {
+        "noAwaitInLoops": "off",
+        "noBarrelFile": "off",
+        "noJsxPropsBind": "off",
+        "useTopLevelRegex": "off"
+      },
+      "security": { "noDangerouslySetInnerHtml": "off" },
+      "style": {
+        "noDescendingSpecificity": "off",
+        "noIncrementDecrement": "off",
+        "noNegationElse": "off",
+        "noNestedTernary": "off",
+        "noUnusedTemplateLiteral": "off",
+        "useAtIndex": "off",
+        "useBlockStatements": "off",
+        "useConsistentMethodSignatures": "off",
+        "useConsistentTypeDefinitions": "off",
+        "useNumberNamespace": "off",
+        "useNumericSeparators": "off"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off",
+        "noDuplicateProperties": "off",
+        "noLeakedRender": "off",
+        "noMisplacedAssertion": "off",
+        "noShadow": "off",
+        "noUnnecessaryConditions": "off",
+        "useAwait": "off"
+      }
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "off",
+        "useSortedAttributes": "off",
+        "useSortedKeys": "off",
+        "useSortedPackageJson": "off",
+        "useSortedProperties": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.css"],
+      "formatter": { "enabled": false }
+    }
+  ]
+}

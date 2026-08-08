@@ -7,6 +7,7 @@
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
+    "lint": "ultracite check .",
     "db:seed": "node scripts/seed-demo-db.mjs",
     "data:stage:plfs": "node scripts/import-plfs-2025.mjs",
     "data:benchmark:compaction": "node scripts/benchmark-serving-cube-compaction.mjs",
@@ -28,12 +29,14 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.5",
     "@opennextjs/cloudflare": "1.20.2",
     "@types/node": "^24.0.0",
     "@types/pg": "8.20.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "typescript": "^5.9.0",
+    "ultracite": "7.10.2",
     "wrangler": "4.114.0"
   },
   "engines": {
