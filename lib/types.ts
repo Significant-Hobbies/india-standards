@@ -14,19 +14,19 @@ export const EDUCATION_LEVELS = [
 ] as const;
 export const AREA_TYPES = ["all", "urban", "rural"] as const;
 
-export const MAX_INCOME_THRESHOLD = 8_500_000;
+const MAX_INCOME_THRESHOLD = 8_500_000;
 export const INCOME_THRESHOLDS: readonly number[] = Object.freeze(
   [
     ...new Set([
       ...Array.from(
         { length: MAX_INCOME_THRESHOLD / 100_000 + 1 },
-        (_, index) => index * 100_000,
+        (_, index) => index * 100_000
       ),
       // Preserve the two half-step thresholds already used by shared URLs.
       250_000,
       750_000,
     ]),
-  ].sort((left, right) => left - right),
+  ].sort((left, right) => left - right)
 );
 
 export const PLFS_STATES = [
@@ -44,11 +44,11 @@ export const PLFS_STATES = [
   "Other States / UTs",
 ] as const;
 
-export type Gender = (typeof GENDERS)[number];
-export type MaritalStatus = (typeof MARITAL_STATUSES)[number];
-export type Education = (typeof EDUCATION_LEVELS)[number];
-export type AreaType = (typeof AREA_TYPES)[number];
-export type PlfsState = (typeof PLFS_STATES)[number];
+type Gender = (typeof GENDERS)[number];
+type MaritalStatus = (typeof MARITAL_STATUSES)[number];
+type Education = (typeof EDUCATION_LEVELS)[number];
+type AreaType = (typeof AREA_TYPES)[number];
+type PlfsState = (typeof PLFS_STATES)[number];
 
 export type EstimateFilters = {
   gender: Gender;
@@ -102,15 +102,13 @@ export type EstimateSuccess = {
     label: string;
     reason: string;
   };
-  heightModel:
-    | {
-        probability: number;
-        low: number;
-        high: number;
-        observations: number;
-        label: "Modelled across datasets";
-      }
-    | null;
+  heightModel: {
+    probability: number;
+    low: number;
+    high: number;
+    observations: number;
+    label: "Modelled across datasets";
+  } | null;
   source:
     | {
         mode: "demo";

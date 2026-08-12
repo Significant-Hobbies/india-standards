@@ -1,6 +1,6 @@
 # India Standards — PROJECT STATUS
 
-Last updated: 2026-08-09
+Last updated: 2026-08-12
 
 ## Why / What
 
@@ -29,9 +29,15 @@ city-level estimates, dating probability, or mutual compatibility.
   `india-standards.significanthobbies.com` hostname and retains
   `india-numbers.significanthobbies.com` as a compatibility alias. Telemetry
   is not included.
+- Knip and jscpd are development-only code-health analyzers. Lizard is pinned
+  in CI and may run locally through `uvx`; none is shipped to the application.
 
 ## Timeline
 
+- 2026-08-12: Adopted the Fleet code-health standard with a complete CI gate,
+  removed six needless exports, brought Knip and dependency severe-risk
+  findings to zero, and added exact no-regression ratchets for coverage,
+  complexity, duplication, cycles, suppressions, formatting, and hygiene.
 - 2026-08-09: Adopted the shared Ultracite lint baseline for the Next.js app;
   37 applicable source and configuration files pass with zero diagnostics via
   explicit compatibility rules, without touching survey data, generated
@@ -142,6 +148,9 @@ city-level estimates, dating probability, or mutual compatibility.
   queries, redacted database failures, generated binding types, and
   version-metadata-backed homepage caching.
 - Shared Ultracite lint baseline with a clean 37-file check.
+- Fleet code-health gate with 32 tests, 95%/78%/93% loaded-module coverage
+  floors, zero Knip findings, zero import cycles, zero known dependency
+  vulnerabilities, and exact structural-debt ratchets.
 
 ## Todo / Planned / Deferred / Blocked
 

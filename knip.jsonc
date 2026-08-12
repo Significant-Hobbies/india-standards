@@ -1,0 +1,7 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": ["open-next.config.ts", "scripts/plfs-variance.d.mts"],
+  // Next owns the server/client marker. The other two packages are invoked by
+  // the code-health orchestrator through child processes, which Knip cannot see.
+  "ignoreDependencies": ["@biomejs/biome", "jscpd", "knip", "server-only"]
+}

@@ -120,12 +120,19 @@ steps are documented in
 
 ```bash
 pnpm test
+pnpm test:coverage
+pnpm quality
 pnpm typecheck
 pnpm build
 pnpm build:cf
 ```
 
-`pnpm check` runs all three in that order.
+`pnpm check` runs type checking, tests, and the local Next.js build in that
+order.
+`pnpm quality` is the CI-enforced Fleet gate. Coverage currently measures the
+production modules loaded by the native test suite; UI, route, worker, and
+data-operation coverage remain explicit follow-up rather than being counted as
+zero or hidden inside an inflated aggregate.
 
 ## Not included
 
