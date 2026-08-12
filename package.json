@@ -17,8 +17,18 @@
     "deploy:cf": "pnpm build:cf && opennextjs-cloudflare deploy --tag \"$(git rev-parse HEAD)\"",
     "cf:typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts",
     "cf:types:check": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts --check",
+    "format:check": "node scripts/check-code-health.mjs format",
+    "quality:unused": "node scripts/check-code-health.mjs unused",
+    "quality:complexity": "node scripts/check-code-health.mjs complexity",
+    "quality:duplication": "node scripts/check-code-health.mjs duplication",
+    "quality:cycles": "node scripts/check-code-health.mjs cycles",
+    "quality:dependencies": "node scripts/check-code-health.mjs dependencies",
+    "quality:suppressions": "node scripts/check-code-health.mjs suppressions",
+    "quality:hygiene": "node scripts/check-code-health.mjs hygiene",
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/*.test.ts tests/*.test.mjs",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include='lib/**/*.ts' --test-coverage-include='scripts/**/*.mjs' --test-coverage-include='agent-edge.mjs' --test-coverage-lines=95 --test-coverage-branches=78 --test-coverage-functions=93 tests/*.test.ts tests/*.test.mjs",
+    "quality": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test:coverage && pnpm quality:unused && pnpm quality:complexity && pnpm quality:duplication && pnpm quality:cycles && pnpm quality:dependencies && pnpm quality:suppressions && pnpm cf:types:check && pnpm build:cf && pnpm quality:hygiene",
     "check": "pnpm typecheck && pnpm test && pnpm build"
   },
   "dependencies": {
@@ -35,6 +45,8 @@
     "@types/pg": "8.20.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "jscpd": "5.0.14",
+    "knip": "6.32.2",
     "typescript": "^5.9.0",
     "ultracite": "7.10.2",
     "wrangler": "4.114.0"
@@ -45,8 +57,11 @@
   "pnpm": {
     "overrides": {
       "@node-minify/core@8.0.6>glob": "12.0.0",
+      "brace-expansion@>=4.0.0 <5.0.9": "5.0.9",
+      "nanoid@<3.3.17": "3.3.17",
       "postcss@<=8.5.17": "8.5.23",
-      "sharp@<0.35.0": "0.35.3"
+      "sharp@<0.35.0": "0.35.3",
+      "undici@>=7.0.0 <7.29.0": "7.29.0"
     }
   },
   "packageManager": "pnpm@10.33.2"
