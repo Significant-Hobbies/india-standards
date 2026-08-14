@@ -28,14 +28,14 @@ const sourceExtensions = new Set([
 
 const baselines = {
   complexity: {
-    violations: 5,
-    maxCcn: 41,
-    maxLength: 356,
+    violations: 2,
+    maxCcn: 16,
+    maxLength: 96,
     maxParams: 10,
   },
   duplication: {
-    clones: 4,
-    duplicatedLines: 49,
+    clones: 3,
+    duplicatedLines: 29,
   },
   unused: {
     files: 0,

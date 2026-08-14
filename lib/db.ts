@@ -2,7 +2,10 @@ import "server-only";
 
 import { Client } from "pg";
 import { assertPlfsPreviewCanServe } from "./accuracy";
-import { buildPlfsPreviewEstimate } from "./estimate-core";
+import {
+  buildPlfsPreviewEstimate,
+  type PlfsPreviewAggregate,
+} from "./estimate-core";
 import { PgDuckDBConnection } from "./pg-duckdb-connection";
 import type { EstimateFilters, EstimateResponse } from "./types";
 import {
@@ -48,8 +51,31 @@ function numberValue(value: unknown) {
   return number;
 }
 
+function optionalNumberValue(value: unknown) {
+  return value === undefined ? undefined : numberValue(value);
+}
+
+function nullableNumberValue(value: unknown) {
+  return value === null || value === undefined ? null : numberValue(value);
+}
+
+function normalizeDemographic(demographic: Record<string, unknown>) {
+  return {
+    ...demographic,
+    observationCount: numberValue(demographic.observationCount),
+    backoffObservationCount: optionalNumberValue(
+      demographic.backoffObservationCount
+    ),
+    lowestMatchedIncome: nullableNumberValue(demographic.lowestMatchedIncome),
+    highestMatchedIncome: nullableNumberValue(demographic.highestMatchedIncome),
+    estimate: numberValue(demographic.estimate),
+    low95: numberValue(demographic.low95),
+    high95: numberValue(demographic.high95),
+  } as PlfsPreviewAggregate;
+}
+
 export async function estimatePopulation(
-  filters: EstimateFilters,
+  filters: EstimateFilters
 ): Promise<EstimateResponse> {
   const client = createMotherDuckClient();
 
@@ -92,7 +118,7 @@ export async function estimatePopulation(
         uncertaintyStatus: metadata.uncertainty_status,
         activationEligible: metadata.activation_eligible,
       },
-      validationChecks,
+      validationChecks
     );
 
     const selectedFilters = {
@@ -107,7 +133,7 @@ export async function estimatePopulation(
     };
     const demographic = await estimatePlfsBestEffort(
       connection,
-      selectedFilters,
+      selectedFilters
     );
     const genderDenominator = await estimatePlfsDomainVariance(connection, {
       ...selectedFilters,
@@ -130,29 +156,9 @@ export async function estimatePopulation(
 
     return buildPlfsPreviewEstimate(
       filters,
-      {
-        ...demographic,
-        observationCount: numberValue(demographic.observationCount),
-        backoffObservationCount:
-          demographic.backoffObservationCount === undefined
-            ? undefined
-            : numberValue(demographic.backoffObservationCount),
-        lowestMatchedIncome:
-          demographic.lowestMatchedIncome === null ||
-          demographic.lowestMatchedIncome === undefined
-            ? null
-            : numberValue(demographic.lowestMatchedIncome),
-        highestMatchedIncome:
-          demographic.highestMatchedIncome === null ||
-          demographic.highestMatchedIncome === undefined
-            ? null
-            : numberValue(demographic.highestMatchedIncome),
-        estimate: numberValue(demographic.estimate),
-        low95: numberValue(demographic.low95),
-        high95: numberValue(demographic.high95),
-      },
+      normalizeDemographic(demographic),
       numberValue(genderDenominator.estimate),
-      numberValue(ageDenominator.estimate),
+      numberValue(ageDenominator.estimate)
     );
   } finally {
     await client.end().catch(() => undefined);
