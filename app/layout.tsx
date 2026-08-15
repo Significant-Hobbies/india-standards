@@ -62,7 +62,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
         {/* fleet-jsonld:end */}
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <script
+          src="https://sassmaker.com/project-strip.js"
+          data-project="india-standards"
+          defer
+        />
+      </body>
     </html>
   );
 }
