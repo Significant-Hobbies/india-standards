@@ -45,18 +45,14 @@ export function validatePlfsVarianceFilters(filters) {
   }
 
   return {
-    gender: optionalChoice(
-      filters.gender,
-      new Set(["men", "women"]),
-      "gender",
-    ),
+    gender: optionalChoice(filters.gender, new Set(["men", "women"]), "gender"),
     ageMin: filters.ageMin,
     ageMax: filters.ageMax,
     minIncome: filters.minIncome,
     maritalStatus: optionalChoice(
       filters.maritalStatus,
       new Set(["any", "never_married", "married", "widowed_divorced"]),
-      "marital status",
+      "marital status"
     ),
     education: optionalChoice(
       filters.education,
@@ -67,21 +63,18 @@ export function validatePlfsVarianceFilters(filters) {
         "graduate",
         "postgraduate",
       ]),
-      "education",
+      "education"
     ),
     state: optionalChoice(filters.state, SUPPORTED_PRODUCT_STATES, "State/UT"),
     area: optionalChoice(
       filters.area,
       new Set(["all", "rural", "urban"]),
-      "area",
+      "area"
     ),
   };
 }
 
-export async function estimatePlfsDomainVariance(connection, inputFilters) {
-  const filters = validatePlfsVarianceFilters(inputFilters);
-  const reader = await connection.runAndReadAll(
-    `WITH selected AS (
+const PLFS_DOMAIN_VARIANCE_SQL = `WITH selected AS (
       SELECT
         design_cell_id,
         psu_id,
@@ -151,24 +144,31 @@ export async function estimatePlfsDomainVariance(connection, inputFilters) {
       coalesce(sum(variance), 0)::DOUBLE AS variance,
       min(lowest_matched_income)::BIGINT AS lowest_matched_income,
       max(highest_matched_income)::BIGINT AS highest_matched_income
-    FROM design_variance`,
-    filters,
+    FROM design_variance`;
+
+function pointBasisFor(observationCount) {
+  if (observationCount === 0) return "requires_validated_backoff";
+  if (observationCount < 30) return "sparse_direct";
+  return "direct";
+}
+
+function nullableNumber(value) {
+  return value === null || value === undefined ? null : Number(value);
+}
+
+export async function estimatePlfsDomainVariance(connection, inputFilters) {
+  const filters = validatePlfsVarianceFilters(inputFilters);
+  const reader = await connection.runAndReadAll(
+    PLFS_DOMAIN_VARIANCE_SQL,
+    filters
   );
   const [result] = reader.getRowObjectsJson();
   const observationCount = Number(result?.observation_count ?? 0);
   const estimate = Number(result?.estimate ?? 0);
   const variance = Math.max(0, Number(result?.variance ?? 0));
   const standardError = Math.sqrt(variance);
-  const lowestMatchedIncome =
-    result?.lowest_matched_income === null ||
-    result?.lowest_matched_income === undefined
-      ? null
-      : Number(result.lowest_matched_income);
-  const highestMatchedIncome =
-    result?.highest_matched_income === null ||
-    result?.highest_matched_income === undefined
-      ? null
-      : Number(result.highest_matched_income);
+  const lowestMatchedIncome = nullableNumber(result?.lowest_matched_income);
+  const highestMatchedIncome = nullableNumber(result?.highest_matched_income);
 
   return {
     observationCount,
@@ -181,12 +181,7 @@ export async function estimatePlfsDomainVariance(connection, inputFilters) {
       estimate > 0 ? (standardError / estimate) * 100 : null,
     low95: Math.max(0, estimate - 1.96 * standardError),
     high95: estimate + 1.96 * standardError,
-    pointBasis:
-      observationCount === 0
-        ? "requires_validated_backoff"
-        : observationCount < 30
-          ? "sparse_direct"
-          : "direct",
+    pointBasis: pointBasisFor(observationCount),
     intervalMethod: "PLFS 2025 published analytic domain-total variance",
   };
 }
@@ -196,8 +191,16 @@ function backoffCandidates(filters) {
   const seen = new Set();
   const ageRanges = [
     [filters.ageMin, filters.ageMax, "same age"],
-    [Math.max(18, filters.ageMin - 2), Math.min(60, filters.ageMax + 2), "age ±2"],
-    [Math.max(18, filters.ageMin - 5), Math.min(60, filters.ageMax + 5), "age ±5"],
+    [
+      Math.max(18, filters.ageMin - 2),
+      Math.min(60, filters.ageMax + 2),
+      "age ±2",
+    ],
+    [
+      Math.max(18, filters.ageMin - 5),
+      Math.min(60, filters.ageMax + 5),
+      "age ±5",
+    ],
     [18, 60, "all supported ages"],
   ];
   const states = [
@@ -312,15 +315,14 @@ export async function estimatePlfsBestEffort(connection, inputFilters) {
       rangePrecisionScore: Math.round(
         100 /
           (1 +
-            (direct.high95 - direct.low95) /
-              (2 * Math.max(direct.estimate, 1))),
+            (direct.high95 - direct.low95) / (2 * Math.max(direct.estimate, 1)))
       ),
     };
   }
 
   const targetDenominator = await estimatePlfsDomainVariance(
     connection,
-    denominatorFilters(filters),
+    denominatorFilters(filters)
   );
   if (targetDenominator.estimate <= 0) {
     return {
@@ -340,12 +342,12 @@ export async function estimatePlfsBestEffort(connection, inputFilters) {
   for (const candidate of candidates) {
     const numerator = await estimatePlfsDomainVariance(
       connection,
-      candidate.filters,
+      candidate.filters
     );
     if (numerator.observationCount === 0 || numerator.estimate <= 0) continue;
     const denominator = await estimatePlfsDomainVariance(
       connection,
-      denominatorFilters(candidate.filters),
+      denominatorFilters(candidate.filters)
     );
     if (denominator.estimate <= 0) continue;
 
@@ -372,6 +374,10 @@ export async function estimatePlfsBestEffort(connection, inputFilters) {
     };
   }
 
+  return buildBackoffEstimate(selected, targetDenominator);
+}
+
+function buildBackoffEstimate(selected, targetDenominator) {
   const estimate =
     (selected.numerator.estimate / selected.denominator.estimate) *
     targetDenominator.estimate;
@@ -384,20 +390,16 @@ export async function estimatePlfsBestEffort(connection, inputFilters) {
         2 +
       (targetDenominator.standardError /
         Math.max(targetDenominator.estimate, 1)) **
-        2,
+        2
   );
   const supportPenalty =
     selected.numerator.observationCount >= 30
       ? 0
-      : Math.min(
-          1.5,
-          Math.sqrt(30 / selected.numerator.observationCount) - 1,
-        );
+      : Math.min(1.5, Math.sqrt(30 / selected.numerator.observationCount) - 1);
   const modelRelativeError =
     0.35 + 0.15 * selected.depth + 0.35 * supportPenalty;
   const standardError =
-    estimate *
-    Math.sqrt(relativeSamplingError ** 2 + modelRelativeError ** 2);
+    estimate * Math.sqrt(relativeSamplingError ** 2 + modelRelativeError ** 2);
   const low95 = Math.max(0, estimate - 1.96 * standardError);
   const high95 = estimate + 1.96 * standardError;
   const relativeHalfWidth =

@@ -69,8 +69,7 @@ function normalCdf(value: number, mean: number, sd: number) {
   const erf =
     sign *
     (1 -
-      ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t -
-        0.284496736) *
+      ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) *
         t +
         0.254829592) *
         t *
@@ -82,7 +81,7 @@ export function heightProbability(
   heightMin: number,
   heightMax: number,
   meanCm: number,
-  sdCm: number,
+  sdCm: number
 ) {
   const lowerEdge = heightMin - 0.5;
   const upperEdge = heightMax + 0.5;
@@ -90,9 +89,8 @@ export function heightProbability(
     0,
     Math.min(
       1,
-      normalCdf(upperEdge, meanCm, sdCm) -
-        normalCdf(lowerEdge, meanCm, sdCm),
-    ),
+      normalCdf(upperEdge, meanCm, sdCm) - normalCdf(lowerEdge, meanCm, sdCm)
+    )
   );
 }
 
@@ -119,7 +117,7 @@ export function rangePrecisionFor(
   observations: number,
   central: number,
   low: number,
-  high: number,
+  high: number
 ) {
   const relativeHalfWidth =
     central > 0
@@ -144,20 +142,56 @@ export function rangePrecisionFor(
   };
 }
 
+function oneInAgeCohortFor(
+  roundedLow: number,
+  roundedHigh: number,
+  ageDenominator: number
+) {
+  return {
+    low: Math.max(
+      1,
+      roundToThreeSignificantDigits(ageDenominator / Math.max(roundedHigh, 1))
+    ),
+    high: Math.max(
+      1,
+      roundToThreeSignificantDigits(ageDenominator / Math.max(roundedLow, 1))
+    ),
+  };
+}
+
+function estimateBasisFor(observations: number) {
+  if (observations < 30) {
+    return {
+      mode: "best_effort" as const,
+      label: "Best-effort model",
+      reason:
+        observations === 0
+          ? "No direct synthetic test records matched; the generated model cell supplies the central value and the range is widened."
+          : "Fewer than 30 direct synthetic test records matched; the generated model cell supplies the central value and the range is widened.",
+    };
+  }
+  return {
+    mode: "direct" as const,
+    label: "Direct cell estimate",
+    reason:
+      "At least 30 direct synthetic test records matched this generated model cell.",
+  };
+}
+
 export function buildEstimate(
   filters: EstimateFilters,
   demographic: DemographicAggregate,
-  height: HeightAggregate,
+  height: HeightAggregate
 ): EstimateResponse {
   const probability = heightProbability(
     filters.heightMin,
     filters.heightMax,
     height.meanCm,
-    height.sdCm,
+    height.sdCm
   );
   const heightMargin = Math.min(
     0.22,
-    Math.max(0.035, 1.8 / Math.sqrt(Math.max(height.observations, 1))),
+    Math.max(0.035, 1.8 / Math.sqrt(Math.max(height.observations, 1)))
   );
   const probabilityLow = Math.max(0, probability * (1 - heightMargin));
   const probabilityHigh = Math.min(1, probability * (1 + heightMargin));
@@ -182,8 +216,7 @@ export function buildEstimate(
   const roundedHigh = roundToThreeSignificantDigits(high);
   const roundedCentral = roundToThreeSignificantDigits(central);
 
-  const percentOfGenderLow =
-    (roundedLow / demographic.genderDenominator) * 100;
+  const percentOfGenderLow = (roundedLow / demographic.genderDenominator) * 100;
   const percentOfGenderHigh =
     (roundedHigh / demographic.genderDenominator) * 100;
   const percentOfAgeLow = (roundedLow / demographic.ageDenominator) * 100;
@@ -199,7 +232,7 @@ export function buildEstimate(
     observations: demographic.observations,
     denominators: {
       selectedGender: roundToThreeSignificantDigits(
-        demographic.genderDenominator,
+        demographic.genderDenominator
       ),
       ageCohort: roundToThreeSignificantDigits(demographic.ageDenominator),
       percentOfGender: {
@@ -210,44 +243,20 @@ export function buildEstimate(
         low: roundToThreeSignificantDigits(percentOfAgeLow),
         high: roundToThreeSignificantDigits(percentOfAgeHigh),
       },
-      oneInAgeCohort: {
-        low: Math.max(
-          1,
-          roundToThreeSignificantDigits(
-            demographic.ageDenominator / Math.max(roundedHigh, 1),
-          ),
-        ),
-        high: Math.max(
-          1,
-          roundToThreeSignificantDigits(
-            demographic.ageDenominator / Math.max(roundedLow, 1),
-          ),
-        ),
-      },
+      oneInAgeCohort: oneInAgeCohortFor(
+        roundedLow,
+        roundedHigh,
+        demographic.ageDenominator
+      ),
     },
     rangePrecision: rangePrecisionFor(
       filters,
       demographic.observations,
       roundedCentral,
       roundedLow,
-      roundedHigh,
+      roundedHigh
     ),
-    estimateBasis:
-      demographic.observations < 30
-        ? {
-            mode: "best_effort",
-            label: "Best-effort model",
-            reason:
-              demographic.observations === 0
-                ? "No direct synthetic test records matched; the generated model cell supplies the central value and the range is widened."
-                : "Fewer than 30 direct synthetic test records matched; the generated model cell supplies the central value and the range is widened.",
-          }
-        : {
-            mode: "direct",
-            label: "Direct cell estimate",
-            reason:
-              "At least 30 direct synthetic test records matched this generated model cell.",
-          },
+    estimateBasis: estimateBasisFor(demographic.observations),
     heightModel: {
       probability: roundToThreeSignificantDigits(probability),
       low: roundToThreeSignificantDigits(probabilityLow),
@@ -259,11 +268,46 @@ export function buildEstimate(
   };
 }
 
+function precisionDescriptionFor(
+  isBackoff: boolean,
+  isSparse: boolean,
+  supportDescription: string
+) {
+  if (isBackoff) {
+    return `${supportDescription} The uncertainty range is widened to account for that modelling step.`;
+  }
+  if (isSparse) {
+    return `${supportDescription} The uncertainty range is especially wide because the direct sample is small.`;
+  }
+  return `${supportDescription} The uncertainty range reflects the PLFS survey design.`;
+}
+
+function plfsEstimateBasisFor(
+  isBackoff: boolean,
+  isSparse: boolean,
+  supportDescription: string
+) {
+  if (isBackoff || isSparse) {
+    return {
+      mode: "best_effort" as const,
+      label: isBackoff
+        ? "Modelled from broader PLFS groups"
+        : "Small direct PLFS sample",
+      reason: supportDescription,
+    };
+  }
+  return {
+    mode: "direct" as const,
+    label: "Direct PLFS estimate",
+    reason: supportDescription,
+  };
+}
+
 export function buildPlfsPreviewEstimate(
   filters: EstimateFilters,
   demographic: PlfsPreviewAggregate,
   genderDenominator: number,
-  ageDenominator: number,
+  ageDenominator: number
 ): EstimateResponse {
   const roundedLow = roundToThreeSignificantDigits(demographic.low95);
   const roundedHigh = roundToThreeSignificantDigits(demographic.high95);
@@ -287,11 +331,11 @@ export function buildPlfsPreviewEstimate(
   const supportDescription = isBackoff
     ? `No direct records matched. This estimate uses ${backoffRecordCount} supporting PLFS ${backoffRecordLabel} from broader but similar groups.`
     : `${demographic.observationCount} direct PLFS ${directRecordLabel} matched.`;
-  const precisionDescription = isBackoff
-    ? `${supportDescription} The uncertainty range is widened to account for that modelling step.`
-    : isSparse
-      ? `${supportDescription} The uncertainty range is especially wide because the direct sample is small.`
-      : `${supportDescription} The uncertainty range reflects the PLFS survey design.`;
+  const precisionDescription = precisionDescriptionFor(
+    isBackoff,
+    isSparse,
+    supportDescription
+  );
 
   return {
     status: "ok",
@@ -307,11 +351,11 @@ export function buildPlfsPreviewEstimate(
         ? undefined
         : {
             lowestMatchedIncome: roundToThreeSignificantDigits(
-              demographic.lowestMatchedIncome,
+              demographic.lowestMatchedIncome
             ),
             highestMatchedIncome: roundToThreeSignificantDigits(
               demographic.highestMatchedIncome ??
-                demographic.lowestMatchedIncome,
+                demographic.lowestMatchedIncome
             ),
             basis: isBackoff ? "broader_groups" : "direct",
           },
@@ -320,34 +364,25 @@ export function buildPlfsPreviewEstimate(
       ageCohort: roundedAgeDenominator,
       percentOfGender: {
         low: roundToThreeSignificantDigits(
-          (roundedLow / Math.max(roundedGenderDenominator, 1)) * 100,
+          (roundedLow / Math.max(roundedGenderDenominator, 1)) * 100
         ),
         high: roundToThreeSignificantDigits(
-          (roundedHigh / Math.max(roundedGenderDenominator, 1)) * 100,
+          (roundedHigh / Math.max(roundedGenderDenominator, 1)) * 100
         ),
       },
       percentOfAgeCohort: {
         low: roundToThreeSignificantDigits(
-          (roundedLow / Math.max(roundedAgeDenominator, 1)) * 100,
+          (roundedLow / Math.max(roundedAgeDenominator, 1)) * 100
         ),
         high: roundToThreeSignificantDigits(
-          (roundedHigh / Math.max(roundedAgeDenominator, 1)) * 100,
+          (roundedHigh / Math.max(roundedAgeDenominator, 1)) * 100
         ),
       },
-      oneInAgeCohort: {
-        low: Math.max(
-          1,
-          roundToThreeSignificantDigits(
-            roundedAgeDenominator / Math.max(roundedHigh, 1),
-          ),
-        ),
-        high: Math.max(
-          1,
-          roundToThreeSignificantDigits(
-            roundedAgeDenominator / Math.max(roundedLow, 1),
-          ),
-        ),
-      },
+      oneInAgeCohort: oneInAgeCohortFor(
+        roundedLow,
+        roundedHigh,
+        roundedAgeDenominator
+      ),
     },
     rangePrecision: {
       score: rangePrecisionScore,
@@ -355,20 +390,11 @@ export function buildPlfsPreviewEstimate(
       disclaimer:
         "Range-precision score, not a probability that the estimate is correct",
     },
-    estimateBasis:
-      isBackoff || isSparse
-        ? {
-            mode: "best_effort",
-            label: isBackoff
-              ? "Modelled from broader PLFS groups"
-              : "Small direct PLFS sample",
-            reason: supportDescription,
-          }
-        : {
-            mode: "direct",
-            label: "Direct PLFS estimate",
-            reason: supportDescription,
-          },
+    estimateBasis: plfsEstimateBasisFor(
+      isBackoff,
+      isSparse,
+      supportDescription
+    ),
     heightModel: null,
     source: PLFS_PREVIEW_SOURCE,
   };

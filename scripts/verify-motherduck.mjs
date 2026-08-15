@@ -7,6 +7,7 @@ import {
   estimatePlfsBestEffort,
   estimatePlfsDomainVariance,
 } from "./plfs-variance.mjs";
+import { comparableEstimate } from "./estimate-comparison.mjs";
 
 const SERVING_TABLES = Object.freeze([
   "category_frequencies",
@@ -66,39 +67,20 @@ const FIXTURES = Object.freeze([
   },
 ]);
 
-function comparableEstimate(result) {
-  return {
-    observationCount: Number(result.observationCount),
-    backoffObservationCount:
-      result.backoffObservationCount === undefined
-        ? undefined
-        : Number(result.backoffObservationCount),
-    estimate: Number(result.estimate),
-    variance: Number(result.variance),
-    low95: Number(result.low95),
-    high95: Number(result.high95),
-    lowestMatchedIncome:
-      result.lowestMatchedIncome === null
-        ? null
-        : Number(result.lowestMatchedIncome),
-    highestMatchedIncome:
-      result.highestMatchedIncome === null
-        ? null
-        : Number(result.highestMatchedIncome),
-    mode: result.mode,
-    modelVersion: result.modelVersion,
-  };
-}
-
 function assertClose(actual, expected, label) {
-  if (actual === null || expected === null || actual === undefined || expected === undefined) {
+  if (
+    actual === null ||
+    expected === null ||
+    actual === undefined ||
+    expected === undefined
+  ) {
     assert.equal(actual, expected, label);
     return;
   }
   const tolerance = Math.max(1e-7, Math.abs(expected) * 1e-12);
   assert.ok(
     Math.abs(actual - expected) <= tolerance,
-    `${label}: expected ${expected}, received ${actual}`,
+    `${label}: expected ${expected}, received ${actual}`
   );
 }
 
@@ -127,13 +109,12 @@ if (!token) {
 const databasePath = path.join(
   process.cwd(),
   "data",
-  "india-standards.official.staging.duckdb",
+  "india-standards.official.staging.duckdb"
 );
 const localInstance = await DuckDBInstance.fromCache(databasePath);
 const local = await localInstance.connect();
 const hostedClient = new Client({
-  host:
-    process.env.MOTHERDUCK_HOST ?? "pg.us-east-1-aws.motherduck.com",
+  host: process.env.MOTHERDUCK_HOST ?? "pg.us-east-1-aws.motherduck.com",
   port: 5432,
   user: "postgres",
   password: token,
@@ -173,15 +154,15 @@ try {
 
   for (const table of SERVING_TABLES) {
     const localCountReader = await local.runAndReadAll(
-      `SELECT count(*)::BIGINT AS rows FROM "${table}"`,
+      `SELECT count(*)::BIGINT AS rows FROM "${table}"`
     );
     const hostedCount = await hostedClient.query(
-      `SELECT count(*)::BIGINT AS rows FROM "${table}"`,
+      `SELECT count(*)::BIGINT AS rows FROM "${table}"`
     );
     assert.equal(
       Number(hostedCount.rows[0].rows),
       Number(localCountReader.getRowObjectsJson()[0].rows),
-      `${table} row count`,
+      `${table} row count`
     );
   }
 
@@ -193,7 +174,7 @@ try {
     assertEstimateParity(
       comparableEstimate(hostedEstimate),
       comparableEstimate(localEstimate),
-      `fixture ${index + 1}`,
+      `fixture ${index + 1}`
     );
 
     const [localDenominator, hostedDenominator] = await Promise.all([
@@ -217,12 +198,12 @@ try {
     assertEstimateParity(
       comparableEstimate(hostedDenominator),
       comparableEstimate(localDenominator),
-      `fixture ${index + 1} denominator`,
+      `fixture ${index + 1} denominator`
     );
   }
 
   console.log(
-    `MotherDuck parity passed for ${SERVING_TABLES.length} tables and ${FIXTURES.length} estimate fixtures.`,
+    `MotherDuck parity passed for ${SERVING_TABLES.length} tables and ${FIXTURES.length} estimate fixtures.`
   );
 } finally {
   local.closeSync();
