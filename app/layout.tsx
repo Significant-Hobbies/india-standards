@@ -1,3 +1,4 @@
+import { AnalyticsProvider } from "@/components/analytics-provider";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
@@ -63,7 +64,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {/* fleet-jsonld:end */}
       </head>
       <body>
-        {children}
+        <AnalyticsProvider>{children}</AnalyticsProvider>
         <script
           src="https://sassmaker.com/project-strip.js"
           data-project="india-standards"
