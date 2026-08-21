@@ -278,27 +278,23 @@ function SourceBadge() {
   );
 }
 
+type RangeControlProps = {
+  label: string;
+  icon: "calendar" | "height";
+  range: { min: number; max: number };
+  values: { min: number; max: number };
+  unit: string;
+  onChange: { min: (value: number) => void; max: (value: number) => void };
+};
+
 function RangeControl({
   label,
   icon,
-  minimum,
-  maximum,
-  minValue,
-  maxValue,
+  range,
+  values,
   unit,
-  onMinimum,
-  onMaximum,
-}: {
-  label: string;
-  icon: "calendar" | "height";
-  minimum: number;
-  maximum: number;
-  minValue: number;
-  maxValue: number;
-  unit: string;
-  onMinimum: (value: number) => void;
-  onMaximum: (value: number) => void;
-}) {
+  onChange,
+}: RangeControlProps) {
   const fieldName = label.toLowerCase().replaceAll(" ", "-");
 
   return (
@@ -320,13 +316,13 @@ function RangeControl({
             id={`${fieldName}-minimum-number`}
             name={`${fieldName}-minimum-number`}
             type="number"
-            min={minimum}
-            max={maxValue}
-            value={minValue}
+            min={range.min}
+            max={values.max}
+            value={values.min}
             onChange={(event) => {
               const value = Number(event.target.value);
               if (Number.isFinite(value)) {
-                onMinimum(Math.max(minimum, Math.min(value, maxValue)));
+                onChange.min(Math.max(range.min, Math.min(value, values.max)));
               }
             }}
           />
@@ -339,13 +335,13 @@ function RangeControl({
             id={`${fieldName}-maximum-number`}
             name={`${fieldName}-maximum-number`}
             type="number"
-            min={minValue}
-            max={maximum}
-            value={maxValue}
+            min={values.min}
+            max={range.max}
+            value={values.max}
             onChange={(event) => {
               const value = Number(event.target.value);
               if (Number.isFinite(value)) {
-                onMaximum(Math.min(maximum, Math.max(value, minValue)));
+                onChange.max(Math.min(range.max, Math.max(value, values.min)));
               }
             }}
           />
@@ -359,11 +355,11 @@ function RangeControl({
             id={`${fieldName}-minimum-range`}
             name={`${fieldName}-minimum-range`}
             type="range"
-            min={minimum}
-            max={maximum}
-            value={minValue}
+            min={range.min}
+            max={range.max}
+            value={values.min}
             onChange={(event) =>
-              onMinimum(Math.min(Number(event.target.value), maxValue))
+              onChange.min(Math.min(Number(event.target.value), values.max))
             }
           />
         </label>
@@ -373,11 +369,11 @@ function RangeControl({
             id={`${fieldName}-maximum-range`}
             name={`${fieldName}-maximum-range`}
             type="range"
-            min={minimum}
-            max={maximum}
-            value={maxValue}
+            min={range.min}
+            max={range.max}
+            value={values.max}
             onChange={(event) =>
-              onMaximum(Math.max(Number(event.target.value), minValue))
+              onChange.max(Math.max(Number(event.target.value), values.min))
             }
           />
         </label>
@@ -401,7 +397,7 @@ function FilterPanel({
 }) {
   const update = <K extends keyof EstimateFilters>(
     key: K,
-    value: EstimateFilters[K],
+    value: EstimateFilters[K]
   ) => setFilters({ ...filters, [key]: value });
 
   return (
@@ -451,13 +447,13 @@ function FilterPanel({
         <RangeControl
           label="Age"
           icon="calendar"
-          minimum={18}
-          maximum={60}
-          minValue={filters.ageMin}
-          maxValue={filters.ageMax}
+          range={{ min: 18, max: 60 }}
+          values={{ min: filters.ageMin, max: filters.ageMax }}
           unit="years"
-          onMinimum={(value) => update("ageMin", value)}
-          onMaximum={(value) => update("ageMax", value)}
+          onChange={{
+            min: (value) => update("ageMin", value),
+            max: (value) => update("ageMax", value),
+          }}
         />
 
         <label className="filter-control">
@@ -479,10 +475,7 @@ function FilterPanel({
             max={INCOME_THRESHOLDS.length - 1}
             value={INCOME_THRESHOLDS.indexOf(filters.minIncome)}
             onChange={(event) =>
-              update(
-                "minIncome",
-                INCOME_THRESHOLDS[Number(event.target.value)],
-              )
+              update("minIncome", INCOME_THRESHOLDS[Number(event.target.value)])
             }
           />
           <span className="income-scale" aria-hidden="true">
@@ -509,7 +502,7 @@ function FilterPanel({
             onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               update(
                 "maritalStatus",
-                event.target.value as EstimateFilters["maritalStatus"],
+                event.target.value as EstimateFilters["maritalStatus"]
               )
             }
           >
@@ -533,7 +526,7 @@ function FilterPanel({
             onChange={(event) =>
               update(
                 "education",
-                event.target.value as EstimateFilters["education"],
+                event.target.value as EstimateFilters["education"]
               )
             }
           >
@@ -564,7 +557,9 @@ function FilterPanel({
               </option>
             ))}
           </select>
-          <span className="control-hint">PLFS State/UT groups · no city claims</span>
+          <span className="control-hint">
+            PLFS State/UT groups · no city claims
+          </span>
         </label>
 
         <fieldset className="filter-control">
@@ -595,7 +590,10 @@ function FilterPanel({
           </div>
         </fieldset>
 
-        <div className="filter-control filter-control--unavailable" aria-disabled="true">
+        <div
+          className="filter-control filter-control--unavailable"
+          aria-disabled="true"
+        >
           <div className="filter-label">
             <span className="filter-icon">
               <Icon name="height" />
@@ -607,8 +605,8 @@ function FilterPanel({
             Waiting for NFHS approval
           </strong>
           <span className="control-hint">
-            Height is excluded until National Family Health Survey (NFHS)
-            access is approved.
+            Height is excluded until National Family Health Survey (NFHS) access
+            is approved.
           </span>
         </div>
       </div>
@@ -632,7 +630,11 @@ function FilterPanel({
 
 function LoadingResult() {
   return (
-    <section className="result-canvas" aria-busy="true" aria-label="Calculating estimate">
+    <section
+      className="result-canvas"
+      aria-busy="true"
+      aria-label="Calculating estimate"
+    >
       <div className="skeleton skeleton--label" />
       <div className="skeleton skeleton--result" />
       <div className="skeleton skeleton--text" />
@@ -645,10 +647,18 @@ function LoadingResult() {
   );
 }
 
-function ErrorResult({ message, retry }: { message: string; retry: () => void }) {
+function ErrorResult({
+  message,
+  retry,
+}: {
+  message: string;
+  retry: () => void;
+}) {
   return (
     <section className="result-canvas result-message" role="alert">
-      <span className="confidence-badge confidence-badge--low">Couldn’t calculate</span>
+      <span className="confidence-badge confidence-badge--low">
+        Couldn’t calculate
+      </span>
       <h2>The hosted model didn’t respond.</h2>
       <p>{message}</p>
       <button className="primary-button" type="button" onClick={retry}>
@@ -701,10 +711,7 @@ function ResultCanvas({
           <p className="result-prefix">Best estimate</p>
           <h2>
             About {formatCount(result.estimate.central)}
-            <span>
-              {" "}
-              {label}
-            </span>
+            <span> {label}</span>
           </h2>
           <p className="result-subtitle">
             <strong>95% uncertainty range:</strong>{" "}
@@ -722,7 +729,7 @@ function ResultCanvas({
                 : "The broader supporting groups first match at "}
               <strong>
                 {formatIncomeThreshold(
-                  result.incomeSupport.lowestMatchedIncome,
+                  result.incomeSupport.lowestMatchedIncome
                 ).replace("+", "")}
               </strong>
               . Nearby cutoffs below that can share the same estimate.
@@ -783,7 +790,9 @@ function ResultCanvas({
               <Icon name="calendar" />
             </span>
             <div>
-              <span>Within {label} aged {cohort}</span>
+              <span>
+                Within {label} aged {cohort}
+              </span>
               <strong>
                 {formatPercent(result.denominators.percentOfAgeCohort.low)}–
                 {formatPercent(result.denominators.percentOfAgeCohort.high)}
@@ -888,11 +897,11 @@ function ResultCanvas({
           <div className="demo-warning">
             <h3>Preview limitation</h3>
             <p>
-              These are real PLFS-derived estimates in a non-commercial
-              research preview. The PLFS usage scope is still under review, and
-              NFHS height access is pending, so height is not available. This
-              does not predict dating success, compatibility, or whether anyone
-              will date you.
+              These are real PLFS-derived estimates in a non-commercial research
+              preview. The PLFS usage scope is still under review, and NFHS
+              height access is pending, so height is not available. This does
+              not predict dating success, compatibility, or whether anyone will
+              date you.
             </p>
           </div>
         </div>
@@ -904,7 +913,9 @@ function ResultCanvas({
 export function Calculator() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [result, setResult] = useState<EstimateResponse | null>(null);
-  const [resultFilters, setResultFilters] = useState<EstimateFilters | null>(null);
+  const [resultFilters, setResultFilters] = useState<EstimateFilters | null>(
+    null
+  );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [shareStatus, setShareStatus] = useState("");
@@ -927,65 +938,70 @@ export function Calculator() {
 
     const observer = new IntersectionObserver(
       ([entry]) => setResultInView(entry.isIntersecting),
-      { threshold: 0.05 },
+      { threshold: 0.05 }
     );
     observer.observe(resultRegion);
     return () => observer.disconnect();
   }, []);
 
-  const calculate = useCallback(async (nextFilters: EstimateFilters, token: string) => {
-    const currentRequest = ++requestId.current;
-    lastAttemptedFilters.current = JSON.stringify(nextFilters);
-    setLoading(true);
-    setError("");
+  const calculate = useCallback(
+    async (nextFilters: EstimateFilters, token: string) => {
+      const currentRequest = ++requestId.current;
+      lastAttemptedFilters.current = JSON.stringify(nextFilters);
+      setLoading(true);
+      setError("");
 
-    try {
-      const response = await fetch("/api/estimate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ filters: nextFilters, turnstileToken: token }),
-      });
-      const payload: unknown = await response.json();
-      if (!response.ok) {
-        const errorMessage =
-          typeof payload === "object" &&
-          payload !== null &&
-          "error" in payload &&
-          typeof payload.error === "string"
-            ? payload.error
-            : "The hosted estimate request failed.";
-        throw new Error(
-          errorMessage,
-        );
+      try {
+        const response = await fetch("/api/estimate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ filters: nextFilters, turnstileToken: token }),
+        });
+        const payload: unknown = await response.json();
+        if (!response.ok) {
+          const errorMessage =
+            typeof payload === "object" &&
+            payload !== null &&
+            "error" in payload &&
+            typeof payload.error === "string"
+              ? payload.error
+              : "The hosted estimate request failed.";
+          throw new Error(errorMessage);
+        }
+        if (currentRequest === requestId.current) {
+          setResult(payload as EstimateResponse);
+          setResultFilters(nextFilters);
+        }
+      } catch (requestError) {
+        if (currentRequest === requestId.current) {
+          setError(
+            requestError instanceof Error
+              ? requestError.message
+              : "The hosted estimate request failed."
+          );
+        }
+      } finally {
+        if (currentRequest === requestId.current) {
+          setLoading(false);
+          setTurnstileToken(null);
+          setTurnstileResetSignal((value) => value + 1);
+        }
       }
-      if (currentRequest === requestId.current) {
-        setResult(payload as EstimateResponse);
-        setResultFilters(nextFilters);
-      }
-    } catch (requestError) {
-      if (currentRequest === requestId.current) {
-        setError(
-          requestError instanceof Error
-            ? requestError.message
-            : "The hosted estimate request failed.",
-        );
-      }
-    } finally {
-      if (currentRequest === requestId.current) {
-        setLoading(false);
-        setTurnstileToken(null);
-        setTurnstileResetSignal((value) => value + 1);
-      }
-    }
-  }, []);
+    },
+    []
+  );
 
   useEffect(() => {
     const filterKey = JSON.stringify(filters);
     const timer = window.setTimeout(() => {
       const query = filtersToSearch(filters);
-      window.history.replaceState(null, "", `${window.location.pathname}?${query}`);
+      window.history.replaceState(
+        null,
+        "",
+        `${window.location.pathname}?${query}`
+      );
       if (turnstileToken && filterKey !== lastAttemptedFilters.current) {
         void calculate(filters, turnstileToken);
       }
@@ -1013,10 +1029,15 @@ export function Calculator() {
         setShareStatus("Result link copied.");
       }
     } catch (shareError) {
-      if (shareError instanceof DOMException && shareError.name === "AbortError") {
+      if (
+        shareError instanceof DOMException &&
+        shareError.name === "AbortError"
+      ) {
         return;
       }
-      setShareStatus("Could not share automatically. Copy the page URL instead.");
+      setShareStatus(
+        "Could not share automatically. Copy the page URL instead."
+      );
     }
   }, [filters, result, resultFilters]);
 
@@ -1075,8 +1096,8 @@ export function Calculator() {
           <h1>How rare are your standards?</h1>
           <p>
             Explore a demographic estimate for India—without pretending it is a
-            dating prediction. The calculator joins your selected filters
-            before estimating the weighted population range.
+            dating prediction. The calculator joins your selected filters before
+            estimating the weighted population range.
           </p>
         </div>
         <div className="demo-callout">
