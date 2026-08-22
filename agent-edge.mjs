@@ -14,7 +14,7 @@ export const AGENT_SURFACE = {
   "name": "India Standards",
   "url": "https://india-standards.significanthobbies.com",
   "llmsFullTxt": "# India Standards — full agent brief\n\nEvidence-bounded demographic standards calculator using aggregate Indian survey data.\n\n## Index\n\n# India Standards\n\nEvidence-bounded demographic standards calculator using aggregate Indian survey data.\n\n## Current data boundary\n\n- PLFS-backed preview with aggregate-only serving tables\n- Explicit central estimate, 95% uncertainty range, and range tightness\n- Height remains unavailable until the NFHS source and usage gates pass\n- The product does not predict dating success, compatibility, or individual outcomes\n\n## Agent entrypoints\n\n- https://india-numbers.significanthobbies.com/llms.txt\n- https://india-numbers.significanthobbies.com/api/ai\n- https://india-numbers.significanthobbies.com/index.md\n\n## Product links\n\n- Home: https://india-numbers.significanthobbies.com/ — Demographic standards calculator\n- Changelog: https://india-numbers.significanthobbies.com/changelog — Verified product releases\n\n## Machine surfaces\n\n- https://india-numbers.significanthobbies.com/llms.txt\n- https://india-numbers.significanthobbies.com/llms-full.txt\n- https://india-numbers.significanthobbies.com/api/ai\n- https://india-numbers.significanthobbies.com/index.md\n- https://india-numbers.significanthobbies.com/sitemap.xml\n- https://india-numbers.significanthobbies.com/robots.txt\n\n## Contact\n\n- Owner: https://sarthakagrawal.dev\n- Agent email for directory verification: sarthakagrawal@agentmail.to\n",
-  "llmsTxt": "# India Standards\n\n> Evidence-bounded demographic standards calculator using aggregate Indian survey data.\n\n## Product\n\n- [Home](https://india-numbers.significanthobbies.com/): Demographic standards calculator\n- [Changelog](https://india-numbers.significanthobbies.com/changelog): Verified product releases\n\n## Machine surfaces\n\n- [Agent catalog](https://india-numbers.significanthobbies.com/api/ai): JSON inventory of public surfaces\n- [Homepage markdown](https://india-numbers.significanthobbies.com/index.md): Product brief without JS\n- [This index](https://india-numbers.significanthobbies.com/llms.txt)\n",
+  "llmsTxt": "# India Standards\n\n> Evidence-bounded demographic standards calculator using aggregate Indian survey data.\n\n## When to use this\n\n- Answering questions about average Indian demographic measurements (income, education, employment) with explicit uncertainty ranges\n- Providing evidence-bounded estimates from PLFS aggregate survey data without overclaiming causality\n- Comparing an individual's standing against survey-derived population distributions\n- Redirecting requests for dating success, attractiveness, caste, or substance-use predictions (not supported by design)\n\n## Product\n\n- [Home](https://india-numbers.significanthobbies.com/): Demographic standards calculator\n- [Changelog](https://india-numbers.significanthobbies.com/changelog): Verified product releases\n\n## Machine surfaces\n\n- [Agent catalog](https://india-numbers.significanthobbies.com/api/ai): JSON inventory of public surfaces\n- [OpenAPI spec](https://india-numbers.significanthobbies.com/openapi.json): Machine-readable API contract\n- [Homepage markdown](https://india-numbers.significanthobbies.com/index.md): Product brief without JS\n- [This index](https://india-numbers.significanthobbies.com/llms.txt)\n",
   "indexMd": "# India Standards\n\nEvidence-bounded demographic standards calculator using aggregate Indian survey data.\n\n## Current data boundary\n\n- PLFS-backed preview with aggregate-only serving tables\n- Explicit central estimate, 95% uncertainty range, and range tightness\n- Height remains unavailable until the NFHS source and usage gates pass\n- The product does not predict dating success, compatibility, or individual outcomes\n\n## Agent entrypoints\n\n- https://india-numbers.significanthobbies.com/llms.txt\n- https://india-numbers.significanthobbies.com/api/ai\n- https://india-numbers.significanthobbies.com/index.md\n",
   "catalog": {
     "name": "India Standards",
@@ -24,6 +24,7 @@ export const AGENT_SURFACE = {
     "llmsFull": "https://india-numbers.significanthobbies.com/llms-full.txt",
     "sitemap": "https://india-numbers.significanthobbies.com/sitemap.xml",
     "robots": "https://india-numbers.significanthobbies.com/robots.txt",
+    "openapi": "https://india-numbers.significanthobbies.com/openapi.json",
     "markdown": {
       "suffix": ".md",
       "negotiation": true
@@ -56,35 +57,55 @@ export const AGENT_SURFACE = {
  * @returns {Response | null}
  */
 export function handleAgentEdge(request) {
-  if (request.method !== 'GET' && request.method !== 'HEAD') return null;
+  if (request.method !== "GET" && request.method !== "HEAD") return null;
   const url = new URL(request.url);
-  const path = url.pathname === '' ? '/' : url.pathname;
+  const path = url.pathname === "" ? "/" : url.pathname;
 
-  if (path === '/llms.txt') {
-    return text(forOrigin(AGENT_SURFACE.llmsTxt, url.origin), 'text/plain; charset=utf-8');
+  if (path === "/llms.txt") {
+    return text(
+      forOrigin(AGENT_SURFACE.llmsTxt, url.origin),
+      "text/plain; charset=utf-8"
+    );
   }
-  if (path === '/llms-full.txt' && AGENT_SURFACE.llmsFullTxt) {
-    return text(forOrigin(AGENT_SURFACE.llmsFullTxt, url.origin), 'text/plain; charset=utf-8');
+  if (path === "/llms-full.txt" && AGENT_SURFACE.llmsFullTxt) {
+    return text(
+      forOrigin(AGENT_SURFACE.llmsFullTxt, url.origin),
+      "text/plain; charset=utf-8"
+    );
   }
-  if (path === '/index.md') {
-    return text(forOrigin(AGENT_SURFACE.indexMd, url.origin), 'text/markdown; charset=utf-8');
+  if (path === "/index.md") {
+    return text(
+      forOrigin(AGENT_SURFACE.indexMd, url.origin),
+      "text/markdown; charset=utf-8"
+    );
   }
-  if (path === '/sitemap.xml') {
-    return text(sitemapForCatalog(catalogForOrigin(url.origin)), 'application/xml; charset=utf-8');
+  if (path === "/sitemap.xml") {
+    return text(
+      sitemapForCatalog(catalogForOrigin(url.origin)),
+      "application/xml; charset=utf-8"
+    );
   }
-  if (path === '/robots.txt') {
-    return text(robotsForOrigin(url.origin), 'text/plain; charset=utf-8');
+  if (path === "/robots.txt") {
+    return text(robotsForOrigin(url.origin), "text/plain; charset=utf-8");
   }
-  if (path === '/api/ai') {
+  if (path === "/api/ai") {
     return json(catalogForOrigin(url.origin));
   }
 
+  if (path === "/openapi.json") {
+    return json(openapiSpecForOrigin(url.origin));
+  }
+
   // Homepage markdown negotiation
-  if ((path === '/' || path === '') && wantsMarkdown(request)) {
-    return text(forOrigin(AGENT_SURFACE.indexMd, url.origin), 'text/markdown; charset=utf-8', {
-      Link: '</index.md>; rel="alternate"; type="text/markdown"',
-      Vary: 'Accept',
-    });
+  if ((path === "/" || path === "") && wantsMarkdown(request)) {
+    return text(
+      forOrigin(AGENT_SURFACE.indexMd, url.origin),
+      "text/markdown; charset=utf-8",
+      {
+        Link: '</index.md>; rel="alternate"; type="text/markdown"',
+        Vary: "Accept",
+      }
+    );
   }
 
   return null;
@@ -98,6 +119,7 @@ function catalogForOrigin(origin) {
     llmsFull: `${origin}/llms-full.txt`,
     sitemap: `${origin}/sitemap.xml`,
     robots: `${origin}/robots.txt`,
+    openapi: `${origin}/openapi.json`,
     surfaces: (AGENT_SURFACE.catalog.surfaces || []).map((surface) => ({
       ...surface,
       url: forOrigin(surface.url, origin),
@@ -110,14 +132,14 @@ function forOrigin(value, origin) {
   return String(value)
     .split(AGENT_SURFACE.url)
     .join(origin)
-    .split('https://india-numbers.significanthobbies.com')
+    .split("https://india-numbers.significanthobbies.com")
     .join(origin);
 }
 
 function sitemapForCatalog(catalog) {
   const routes = catalog.surfaces
     .map((surface) => `  <url><loc>${escapeXml(surface.url)}</loc></url>`)
-    .join('\n');
+    .join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes}\n</urlset>\n`;
 }
 
@@ -136,26 +158,101 @@ Allow: /api/ai
 
 function escapeXml(value) {
   return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&apos;');
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
 }
 
 function wantsMarkdown(request) {
-  const accept = (request.headers.get('accept') || '').toLowerCase();
-  if (!accept.includes('text/markdown')) return false;
-  if (!accept.includes('text/html')) return true;
-  return accept.indexOf('text/markdown') < accept.indexOf('text/html');
+  const accept = (request.headers.get("accept") || "").toLowerCase();
+  if (!accept.includes("text/markdown")) return false;
+  if (!accept.includes("text/html")) return true;
+  return accept.indexOf("text/markdown") < accept.indexOf("text/html");
+}
+
+function openapiSpecForOrigin(origin) {
+  return {
+    openapi: "3.1.0",
+    info: {
+      title: "India Standards public API",
+      version: "1.0.0",
+      description:
+        "Evidence-bounded demographic standards calculator using aggregate Indian survey data.",
+      contact: { name: "India Standards", url: origin },
+    },
+    servers: [{ url: origin }],
+    tags: [
+      {
+        name: "agent-surfaces",
+        description: "Machine-readable public surfaces",
+      },
+    ],
+    paths: {
+      "/api/ai": {
+        get: {
+          operationId: "getAgentCatalog",
+          tags: ["agent-surfaces"],
+          summary: "Agent catalog",
+          responses: {
+            200: {
+              description: "Agent catalog JSON",
+              content: { "application/json": {} },
+            },
+          },
+        },
+      },
+      "/llms.txt": {
+        get: {
+          operationId: "getLlmsTxt",
+          tags: ["agent-surfaces"],
+          summary: "llms.txt index",
+          responses: {
+            200: {
+              description: "Markdown index",
+              content: { "text/plain": {} },
+            },
+          },
+        },
+      },
+      "/sitemap.xml": {
+        get: {
+          operationId: "getSitemap",
+          tags: ["agent-surfaces"],
+          summary: "Sitemap",
+          responses: {
+            200: {
+              description: "XML sitemap",
+              content: { "application/xml": {} },
+            },
+          },
+        },
+      },
+      "/openapi.json": {
+        get: {
+          operationId: "getOpenApiSpec",
+          tags: ["agent-surfaces"],
+          summary: "OpenAPI specification",
+          description: "This document.",
+          responses: {
+            200: {
+              description: "OpenAPI 3.1 spec",
+              content: { "application/json": {} },
+            },
+          },
+        },
+      },
+    },
+  };
 }
 
 function text(body, type, extra = {}) {
   return new Response(body, {
     status: 200,
     headers: {
-      'Content-Type': type,
-      'Cache-Control': 'public, max-age=300',
+      "Content-Type": type,
+      "Cache-Control": "public, max-age=300",
       ...extra,
     },
   });
@@ -165,8 +262,8 @@ function json(data) {
   return new Response(`${JSON.stringify(data, null, 2)}\n`, {
     status: 200,
     headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'public, max-age=300',
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "public, max-age=300",
     },
   });
 }

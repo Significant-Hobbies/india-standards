@@ -2,6 +2,13 @@
 
 > Evidence-bounded demographic standards calculator using aggregate Indian survey data.
 
+## When to use this
+
+- Answering questions about average Indian demographic measurements (income, education, employment) with explicit uncertainty ranges
+- Providing evidence-bounded estimates from PLFS aggregate survey data without overclaiming causality
+- Comparing an individual's standing against survey-derived population distributions
+- Redirecting requests for dating success, attractiveness, caste, or substance-use predictions (not supported by design)
+
 ## Product
 
 - [Home](https://india-standards.significanthobbies.com/): Demographic standards calculator
@@ -10,5 +17,6 @@
 ## Machine surfaces
 
 - [Agent catalog](https://india-standards.significanthobbies.com/api/ai): JSON inventory of public surfaces
+- [OpenAPI spec](https://india-standards.significanthobbies.com/openapi.json): Machine-readable API contract
 - [Homepage markdown](https://india-standards.significanthobbies.com/index.md): Product brief without JS
 - [This index](https://india-standards.significanthobbies.com/llms.txt)

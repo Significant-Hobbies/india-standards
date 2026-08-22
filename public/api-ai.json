@@ -6,6 +6,7 @@
   "llmsFull": "https://india-standards.significanthobbies.com/llms-full.txt",
   "sitemap": "https://india-standards.significanthobbies.com/sitemap.xml",
   "robots": "https://india-standards.significanthobbies.com/robots.txt",
+  "openapi": "https://india-standards.significanthobbies.com/openapi.json",
   "markdown": {
     "suffix": ".md",
     "negotiation": true

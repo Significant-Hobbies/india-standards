@@ -9,7 +9,9 @@ const ORIGINS = [
 ];
 
 async function request(origin, path, headers) {
-  const response = handleAgentEdge(new Request(`${origin}${path}`, { headers }));
+  const response = handleAgentEdge(
+    new Request(`${origin}${path}`, { headers })
+  );
   assert.ok(response, `expected agent response for ${path}`);
   assert.equal(response.status, 200);
   return response;
@@ -29,30 +31,53 @@ for (const origin of ORIGINS) {
     assert.match(await index.text(), new RegExp(`${origin}/index\\.md`));
 
     const negotiated = await request(origin, "/", { accept: "text/markdown" });
-    assert.match(negotiated.headers.get("content-type") ?? "", /text\/markdown/);
+    assert.match(
+      negotiated.headers.get("content-type") ?? "",
+      /text\/markdown/
+    );
 
-    const catalog = await request(origin, "/api/ai").then((response) => response.json());
+    const catalog = await request(origin, "/api/ai").then((response) =>
+      response.json()
+    );
     assert.equal(catalog.url, origin);
     assert.equal(catalog.sitemap, `${origin}/sitemap.xml`);
     assert.equal(catalog.robots, `${origin}/robots.txt`);
     assert.deepEqual(
       catalog.surfaces.map((surface) => surface.url),
-      [`${origin}/`, `${origin}/changelog`],
+      [`${origin}/`, `${origin}/changelog`]
     );
+
+    assert.equal(catalog.openapi, `${origin}/openapi.json`);
+
+    const openapi = await request(origin, "/openapi.json").then((response) =>
+      response.json()
+    );
+    assert.equal(openapi.openapi, "3.1.0");
+    assert.equal(openapi.info.title, "India Standards public API");
+    assert.equal(openapi.servers[0].url, origin);
+    assert.deepEqual(Object.keys(openapi.paths).sort(), [
+      "/api/ai",
+      "/llms.txt",
+      "/openapi.json",
+      "/sitemap.xml",
+    ]);
 
     const sitemap = await request(origin, "/sitemap.xml");
     assert.match(sitemap.headers.get("content-type") ?? "", /application\/xml/);
     assert.match(await sitemap.text(), new RegExp(`${origin}/changelog`));
 
     const robots = await request(origin, "/robots.txt");
-    assert.match(await robots.text(), new RegExp(`Sitemap: ${origin}/sitemap\\.xml`));
+    assert.match(
+      await robots.text(),
+      new RegExp(`Sitemap: ${origin}/sitemap\\.xml`)
+    );
   });
 }
 
 test("ships canonical same-host static sitemap and robots fallbacks", async () => {
   assert.equal(
     AGENT_SURFACE.url,
-    "https://india-standards.significanthobbies.com",
+    "https://india-standards.significanthobbies.com"
   );
 
   const [sitemap, robots] = await Promise.all([
@@ -62,15 +87,15 @@ test("ships canonical same-host static sitemap and robots fallbacks", async () =
 
   assert.match(
     sitemap,
-    /<loc>https:\/\/india-standards\.significanthobbies\.com\/<\/loc>/,
+    /<loc>https:\/\/india-standards\.significanthobbies\.com\/<\/loc>/
   );
   assert.match(
     sitemap,
-    /<loc>https:\/\/india-standards\.significanthobbies\.com\/changelog<\/loc>/,
+    /<loc>https:\/\/india-standards\.significanthobbies\.com\/changelog<\/loc>/
   );
   assert.doesNotMatch(sitemap, /india-numbers\.significanthobbies\.com/);
   assert.match(
     robots,
-    /Sitemap: https:\/\/india-standards\.significanthobbies\.com\/sitemap\.xml/,
+    /Sitemap: https:\/\/india-standards\.significanthobbies\.com\/sitemap\.xml/
   );
 });

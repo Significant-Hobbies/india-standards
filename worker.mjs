@@ -30,7 +30,7 @@ export default {
     const cache = caches.default;
     const cacheKey = homeCacheKey(
       request,
-      env.CF_VERSION_METADATA?.id ?? "local",
+      env.CF_VERSION_METADATA?.id ?? "local"
     );
     const cached = await cache.match(cacheKey);
     if (cached) {
@@ -42,12 +42,33 @@ export default {
     const response = await openNext.fetch(request, env, ctx);
     const contentType = response.headers.get("content-type") ?? "";
     if (response.status !== 200 || !contentType.includes("text/html")) {
+      // Add Vary: Accept to non-200 HTML responses (e.g. 404) so caches
+      // distinguish markdown vs HTML negotiation.
+      if (contentType.includes("text/html")) {
+        const headers = new Headers(response.headers);
+        const vary = headers.get("vary");
+        headers.set(
+          "vary",
+          vary ? `${vary}, Accept, Accept-Encoding` : "Accept, Accept-Encoding"
+        );
+        return new Response(response.body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers,
+        });
+      }
       return response;
     }
 
     const body = await response.arrayBuffer();
     const headers = new Headers(response.headers);
     headers.set("Cache-Control", HOME_CACHE_CONTROL);
+    // Add Vary: Accept for HTML pages that have markdown alternates
+    const vary = headers.get("vary");
+    headers.set(
+      "vary",
+      vary ? `${vary}, Accept, Accept-Encoding` : "Accept, Accept-Encoding"
+    );
     const cacheable = new Response(body, {
       status: response.status,
       statusText: response.statusText,
