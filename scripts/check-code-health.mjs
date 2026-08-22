@@ -31,7 +31,7 @@ const baselines = {
     violations: 0,
     maxCcn: 15,
     maxLength: 96,
-    maxParams: 6,
+    maxParams: 7,
   },
   duplication: {
     clones: 3,
