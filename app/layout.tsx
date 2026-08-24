@@ -76,6 +76,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           data-project="india-standards"
           defer
         />
+        <script
+          src="https://sassmaker.com/ai-chat-footer.js"
+          data-name="India Standards"
+          defer
+        />
       </body>
     </html>
   );
