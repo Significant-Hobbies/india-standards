@@ -4,9 +4,9 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 const siteUrl = "https://india-standards.significanthobbies.com";
-const title = "India Standards — demographic calculator";
+const title = "India Standards — PLFS demographic calculator";
 const description =
-  "A playful experiment for exploring demographic standards with visible uncertainty.";
+  "Estimate how many Indian adults match selected demographic standards using aggregate PLFS 2025 data, with a visible 95% uncertainty range and source limits.";
 const socialImage =
   "https://raw.githubusercontent.com/Significant-Hobbies/india-standards/main/artifacts/design/review/after-1440.png";
 const structuredData = {
@@ -79,6 +79,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script
           src="https://sassmaker.com/ai-chat-footer.js"
           data-name="India Standards"
+          data-compose="false"
           defer
         />
       </body>

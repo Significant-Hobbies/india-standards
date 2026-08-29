@@ -1092,12 +1092,13 @@ export function Calculator() {
 
       <section className="intro">
         <div>
-          <p className="intro-line">Playful by tone. Honest by method.</p>
-          <h1>How rare are your standards?</h1>
+          <p className="intro-line">Official data. Honest uncertainty.</p>
+          <h1>How many Indian adults match your standards?</h1>
           <p>
-            Explore a demographic estimate for India—without pretending it is a
-            dating prediction. The calculator joins your selected filters before
-            estimating the weighted population range.
+            Choose age, earned income, education, location, and other filters.
+            India Standards joins them against aggregate PLFS 2025 data to
+            estimate a weighted count and 95% uncertainty range—not dating
+            success or compatibility.
           </p>
         </div>
         <div className="demo-callout">
