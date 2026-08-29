@@ -1,0 +1,40 @@
+{
+  "$schema": "fleet.landing-audit.v1",
+  "project": "india-standards",
+  "priority": "P4",
+  "decision": "Hold",
+  "auditedAt": "2026-08-29",
+  "candidateUrl": "https://commitments-contractor-sole-light.trycloudflare.com/",
+  "productionUrl": "https://india-standards.significanthobbies.com/",
+  "releaseState": "Local candidate qualified; purpose copy, metadata, and Ask AI composition are not deployed by this audit.",
+  "implementationAction": "preserve",
+  "migrationCandidate": false,
+  "gates": {
+    "contentPurpose": {
+      "score": 100,
+      "status": "pass",
+      "evidence": "The candidate H1 now names the exact outcome: how many Indian adults match selected standards. The adjacent copy states the filters, aggregate PLFS 2025 mechanism, weighted count, 95% uncertainty range, and explicit exclusion of dating-success or compatibility claims. Source and NFHS limits remain visible in the first viewport."
+    },
+    "designQuality": {
+      "score": 94,
+      "status": "pass",
+      "evidence": "The purpose-built calculator workbench is clear, distinctive, and suitable for bright mobile use. The central estimate surface precedes compact touch-friendly filters; evidence state, unavailable height, and methodology remain visible. Exact 390 and 1440 pixel checks have zero horizontal overflow and the latest candidate includes one project strip and one Ask AI footer."
+    },
+    "seo": {
+      "score": 100,
+      "status": "pass",
+      "evidence": "The latest candidate passes all 15 homepage checks with no warning: concise title, 156-character purpose-rich description, canonical, Open Graph, Twitter card, valid JSON-LD, direct H1, heading hierarchy, approximately 401 server-rendered words, and no broken internal links. The two-page production sitemap has zero errors, redirects, or orphans."
+    },
+    "geo": {
+      "score": 100,
+      "status": "pass",
+      "evidence": "The canonical production host scores S-tier 100 with llms.txt, /api/ai, homepage Markdown, robots policy, crawler access, sitemap, JSON-LD, and complete catalog integrity. Agent surfaces correctly preserve the aggregate-only data boundary and unsupported-claim exclusions."
+    },
+    "performance": {
+      "score": 96,
+      "status": "pass",
+      "evidence": "PSI Swarm completed 4/4 candidate profiles with weighted LCP 693 ms, CLS 0, and TBT 11 ms. LCP ranged from 1.63 s on slow 3G to 302 ms on desktop. The remaining advisory is approximately 45 KiB of unused JavaScript; the temporary tunnel's Turnstile hostname rejection is expected and not a production performance defect."
+    }
+  },
+  "minimumObserved": 94
+}
