@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import styles from "./page.module.css";
 
-const repository =
-  "https://github.com/Significant-Hobbies/india-standards";
+const repository = "https://github.com/Significant-Hobbies/india-standards";
 
 const release = {
   date: "2026-07-27",
@@ -52,8 +51,8 @@ export default function ChangelogPage() {
           <p className={styles.eyebrow}>Product history</p>
           <h1 id="changelog-title">Changelog</h1>
           <p className={styles.lede}>
-            Meaningful improvements to the calculator, published only after
-            they are part of the public product.
+            Meaningful improvements to the calculator, published only after they
+            are part of the public product.
           </p>
           <nav className={styles.projectLinks} aria-label="Project links">
             <a href={`${repository}/issues`}>Roadmap</a>
