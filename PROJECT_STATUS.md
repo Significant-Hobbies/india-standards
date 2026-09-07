@@ -1,6 +1,22 @@
 # India Standards — PROJECT STATUS
 
-Last updated: 2026-08-12
+Last updated: 2026-09-07
+
+## Current qualification
+
+September 7 source repairs prevent unsupported PLFS combinations from becoming
+zero estimates, preserve fractional reciprocal bounds, use unrounded inputs
+for percentage endpoints, disclose national denominator counts/source limits,
+and share the displayed result's filters. Local aggregate cases and caveats
+are recorded in [the calculator audit](docs/knowledge/audits/calculator-shareability.md).
+
+Local `pnpm test` passes 38 tests, and the complete `pnpm quality` gate passes
+including Cloudflare build, coverage, dependency risk and code-health ratchets.
+One pre-existing unused suppression warning remains in the generated layout.
+
+No deployment or hosted browser qualification occurred. The remaining work is
+[hosted qualification #35](https://github.com/Significant-Hobbies/india-standards/issues/35)
+and [source activation gates #36](https://github.com/Significant-Hobbies/india-standards/issues/36).
 
 ## Why / What
 

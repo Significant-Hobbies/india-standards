@@ -1,3 +1,4 @@
+import { EstimateUnavailableError } from "@/lib/estimate-core";
 import { estimatePopulation } from "@/lib/db";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { parseEstimateFilters } from "@/lib/validation";
@@ -21,11 +22,14 @@ export async function POST(request: Request) {
     if (!verified) {
       return Response.json(
         { error: "Verification failed. Please try again." },
-        { status: 403 },
+        { status: 403 }
       );
     }
     return Response.json(await estimatePopulation(filters));
   } catch (error) {
+    if (error instanceof EstimateUnavailableError) {
+      return Response.json({ error: error.message }, { status: 422 });
+    }
     const message =
       error instanceof Error
         ? error.message
@@ -44,7 +48,7 @@ export async function POST(request: Request) {
       },
       {
         status: isInputError ? 400 : 503,
-      },
+      }
     );
   }
 }

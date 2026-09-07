@@ -36,6 +36,30 @@ export type PlfsPreviewAggregate = {
   intervalMethod: string;
 };
 
+export class EstimateUnavailableError extends Error {
+  constructor() {
+    super(
+      "The survey has insufficient support for these filters or their comparison populations. Try a broader age range or fewer filters; this does not mean zero people match."
+    );
+    this.name = "EstimateUnavailableError";
+  }
+}
+
+export function comparisonFiltersFor(filters: EstimateFilters) {
+  const ageCohort: EstimateFilters = {
+    ...filters,
+    minIncome: 0,
+    maritalStatus: "any",
+    education: "any",
+    state: "all",
+    area: "all",
+  };
+  return {
+    selectedGender: { ...ageCohort, ageMin: 18, ageMax: 60 },
+    ageCohort,
+  };
+}
+
 const SOURCE: EstimateSuccess["source"] = {
   mode: "demo",
   label: "Synthetic test data",
@@ -150,12 +174,15 @@ function oneInAgeCohortFor(
   return {
     low: Math.max(
       1,
-      roundToThreeSignificantDigits(ageDenominator / Math.max(roundedHigh, 1))
+      roundToThreeSignificantDigits(ageDenominator / roundedHigh)
     ),
-    high: Math.max(
-      1,
-      roundToThreeSignificantDigits(ageDenominator / Math.max(roundedLow, 1))
-    ),
+    high:
+      roundedLow > 0
+        ? Math.max(
+            1,
+            roundToThreeSignificantDigits(ageDenominator / roundedLow)
+          )
+        : null,
   };
 }
 
@@ -303,18 +330,34 @@ function plfsEstimateBasisFor(
   };
 }
 
+function assertPlfsPopulationSupported(
+  demographic: PlfsPreviewAggregate,
+  genderDenominator: number,
+  ageDenominator: number
+) {
+  if (
+    !["direct", "hierarchical_backoff"].includes(demographic.mode) ||
+    !Number.isFinite(genderDenominator) ||
+    genderDenominator <= 0 ||
+    !Number.isFinite(ageDenominator) ||
+    ageDenominator <= 0
+  ) {
+    throw new EstimateUnavailableError();
+  }
+}
+
 export function buildPlfsPreviewEstimate(
   filters: EstimateFilters,
   demographic: PlfsPreviewAggregate,
   genderDenominator: number,
   ageDenominator: number
 ): EstimateResponse {
+  assertPlfsPopulationSupported(demographic, genderDenominator, ageDenominator);
   const roundedLow = roundToThreeSignificantDigits(demographic.low95);
   const roundedHigh = roundToThreeSignificantDigits(demographic.high95);
   const roundedCentral = roundToThreeSignificantDigits(demographic.estimate);
   const roundedGenderDenominator =
     roundToThreeSignificantDigits(genderDenominator);
-  const roundedAgeDenominator = roundToThreeSignificantDigits(ageDenominator);
   const relativeHalfWidth =
     roundedCentral > 0
       ? (roundedHigh - roundedLow) / (2 * roundedCentral)
@@ -361,27 +404,27 @@ export function buildPlfsPreviewEstimate(
           },
     denominators: {
       selectedGender: roundedGenderDenominator,
-      ageCohort: roundedAgeDenominator,
+      ageCohort: roundToThreeSignificantDigits(ageDenominator),
       percentOfGender: {
         low: roundToThreeSignificantDigits(
-          (roundedLow / Math.max(roundedGenderDenominator, 1)) * 100
+          (demographic.low95 / genderDenominator) * 100
         ),
         high: roundToThreeSignificantDigits(
-          (roundedHigh / Math.max(roundedGenderDenominator, 1)) * 100
+          (demographic.high95 / genderDenominator) * 100
         ),
       },
       percentOfAgeCohort: {
         low: roundToThreeSignificantDigits(
-          (roundedLow / Math.max(roundedAgeDenominator, 1)) * 100
+          (demographic.low95 / ageDenominator) * 100
         ),
         high: roundToThreeSignificantDigits(
-          (roundedHigh / Math.max(roundedAgeDenominator, 1)) * 100
+          (demographic.high95 / ageDenominator) * 100
         ),
       },
       oneInAgeCohort: oneInAgeCohortFor(
         roundedLow,
         roundedHigh,
-        roundedAgeDenominator
+        ageDenominator
       ),
     },
     rangePrecision: {

@@ -4,6 +4,7 @@ import { Client } from "pg";
 import { assertPlfsPreviewCanServe } from "./accuracy";
 import {
   buildPlfsPreviewEstimate,
+  comparisonFiltersFor,
   type PlfsPreviewAggregate,
 } from "./estimate-core";
 import { PgDuckDBConnection } from "./pg-duckdb-connection";
@@ -135,24 +136,15 @@ export async function estimatePopulation(
       connection,
       selectedFilters
     );
-    const genderDenominator = await estimatePlfsDomainVariance(connection, {
-      ...selectedFilters,
-      ageMin: 18,
-      ageMax: 60,
-      minIncome: 0,
-      maritalStatus: "any",
-      education: "any",
-      state: "all",
-      area: "all",
-    });
-    const ageDenominator = await estimatePlfsDomainVariance(connection, {
-      ...selectedFilters,
-      minIncome: 0,
-      maritalStatus: "any",
-      education: "any",
-      state: "all",
-      area: "all",
-    });
+    const comparisonFilters = comparisonFiltersFor(filters);
+    const genderDenominator = await estimatePlfsDomainVariance(
+      connection,
+      comparisonFilters.selectedGender
+    );
+    const ageDenominator = await estimatePlfsDomainVariance(
+      connection,
+      comparisonFilters.ageCohort
+    );
 
     return buildPlfsPreviewEstimate(
       filters,

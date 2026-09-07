@@ -4,6 +4,22 @@ An experiment for a playful, transparent India demographic standards
 calculator. It serves a PLFS 2025-backed demographic and earnings preview from
 validated aggregates; height remains unavailable.
 
+## Current qualification and tasks
+
+The September 7 source repair qualifies calculation boundaries against the
+read-only admitted PLFS aggregate database. See the
+[exact local cases and denominator evidence](docs/knowledge/audits/calculator-shareability.md).
+Source checks do not establish a working hosted journey or permission to
+claim full survey coverage.
+
+- [#35: approved deployment and hosted calculator qualification](https://github.com/Significant-Hobbies/india-standards/issues/35)
+  remains blocked on deployment approval and successful human verification.
+- [#36: source usage/NFHS gates](https://github.com/Significant-Hobbies/india-standards/issues/36)
+  remains deferred; height stays disabled and the product stays a preview.
+
+Task reconciliation found no existing open Issues or PRs; these two issues
+preserve real remaining gates. No product intention was closed as completed.
+
 ## Try it
 
 Canonical production target:

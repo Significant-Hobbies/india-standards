@@ -89,7 +89,7 @@ export type EstimateSuccess = {
     };
     oneInAgeCohort: {
       low: number;
-      high: number;
+      high: number | null;
     };
   };
   rangePrecision: {

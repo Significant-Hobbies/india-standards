@@ -151,6 +151,13 @@ accuracy and coverage: compression, narrower physical types, or coarser
 pre-aggregation is acceptable only when representative outputs and intervals
 remain unchanged within the documented tolerance.
 
+The two comparison denominators are national eligible people of the selected
+gender: ages 18–60 and the selected age cohort. Both reset income, marital,
+education, State/UT and area filters. Percentage endpoints scale count bounds
+against those estimated populations, using unrounded inputs; they do not
+include a separately estimated ratio variance. A zero lower count has an
+unbounded reciprocal endpoint, represented as `null` in the API.
+
 The estimate API returns only:
 
 - rounded count range;
@@ -214,7 +221,11 @@ not included in source, build output, logs, API responses, or browser assets.
 
 ## Sparse-cell and range-precision policy
 
-A valid filter combination always returns the model's best available range.
+A valid filter combination returns a range only when the direct sample or
+broader model has support and both national comparison populations are valid.
+Insufficient target population or back-off support is unavailable, not a
+successful zero. The estimate endpoint returns 422 with a filter-broadening
+explanation in that case.
 Cells with fewer than 30 direct records are not treated as equally reliable:
 they use the documented best-effort basis, receive additional sparse-cell
 widening, and disclose the direct count. Official mode must use a documented

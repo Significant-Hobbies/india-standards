@@ -6,11 +6,11 @@ import {
   INCOME_THRESHOLDS,
   MARITAL_STATUSES,
   type EstimateFilters,
-} from "./types";
+} from "./types.ts";
 
 function isMember<T extends readonly string[]>(
   values: T,
-  value: unknown,
+  value: unknown
 ): value is T[number] {
   return typeof value === "string" && values.includes(value);
 }
@@ -19,10 +19,16 @@ function integerInRange(
   value: unknown,
   name: string,
   minimum: number,
-  maximum: number,
+  maximum: number
 ) {
-  if (!Number.isInteger(value) || Number(value) < minimum || Number(value) > maximum) {
-    throw new Error(`${name} must be a whole number from ${minimum} to ${maximum}.`);
+  if (
+    !Number.isInteger(value) ||
+    Number(value) < minimum ||
+    Number(value) > maximum
+  ) {
+    throw new Error(
+      `${name} must be a whole number from ${minimum} to ${maximum}.`
+    );
   }
   return Number(value);
 }
@@ -79,4 +85,15 @@ export function parseEstimateFilters(value: unknown): EstimateFilters {
     heightMin,
     heightMax,
   };
+}
+
+export function estimateShareUrl(baseUrl: string, filters: EstimateFilters) {
+  const url = new URL(baseUrl);
+  url.search = "";
+  url.hash = "";
+  for (const [key, value] of Object.entries(filters)) {
+    if (key === "heightMin" || key === "heightMax") continue;
+    url.searchParams.set(key, String(value));
+  }
+  return url.toString();
 }

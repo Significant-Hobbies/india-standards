@@ -17,7 +17,7 @@ import {
   type EstimateFilters,
   type EstimateResponse,
 } from "@/lib/types";
-import { parseEstimateFilters } from "@/lib/validation";
+import { estimateShareUrl, parseEstimateFilters } from "@/lib/validation";
 import { TurnstileWidget } from "@/components/turnstile-widget";
 
 const TURNSTILE_SITE_KEY =
@@ -659,7 +659,7 @@ function ErrorResult({
       <span className="confidence-badge confidence-badge--low">
         Couldn’t calculate
       </span>
-      <h2>The hosted model didn’t respond.</h2>
+      <h2>No estimate is available.</h2>
       <p>{message}</p>
       <button className="primary-button" type="button" onClick={retry}>
         Retry estimate
@@ -773,16 +773,26 @@ function ResultCanvas({
       <div className="result-body">
         <div className="comparisons">
           <h3>How this compares</h3>
+          <p>
+            Both comparison populations cover all India, all education and
+            marital groups, and no income minimum. Location filters narrow the
+            matching count, not these denominators. Percentages scale the count
+            bounds; they are not independently estimated percentage intervals.
+          </p>
           <div className="comparison-row">
             <span className="comparison-icon">
               <Icon name="people" />
             </span>
             <div>
-              <span>Of supported {label} aged 18–60</span>
+              <span>Of eligible {label} aged 18–60, all India</span>
               <strong>
                 {formatPercent(result.denominators.percentOfGender.low)}–
                 {formatPercent(result.denominators.percentOfGender.high)}
               </strong>
+              <p>
+                Denominator: about{" "}
+                {formatCount(result.denominators.selectedGender)} people
+              </p>
             </div>
           </div>
           <div className="comparison-row">
@@ -791,12 +801,16 @@ function ResultCanvas({
             </span>
             <div>
               <span>
-                Within {label} aged {cohort}
+                Of eligible {label} aged {cohort}, all India
               </span>
               <strong>
                 {formatPercent(result.denominators.percentOfAgeCohort.low)}–
                 {formatPercent(result.denominators.percentOfAgeCohort.high)}
               </strong>
+              <p>
+                Denominator: about {formatCount(result.denominators.ageCohort)}{" "}
+                people
+              </p>
             </div>
           </div>
           {result.estimate.high < 1 ? (
@@ -820,7 +834,10 @@ function ResultCanvas({
               </strong>{" "}
               to{" "}
               <strong>
-                1 in {formatCount(result.denominators.oneInAgeCohort.high)}
+                1 in{" "}
+                {result.denominators.oneInAgeCohort.high === null
+                  ? "unbounded"
+                  : formatCount(result.denominators.oneInAgeCohort.high)}
               </strong>{" "}
               in this age cohort.
             </p>
@@ -869,11 +886,23 @@ function ResultCanvas({
             </p>
           </div>
           <div>
+            <h3>Population covered</h3>
+            <p>
+              Calendar-year 2025 survey weights, not a current census count.
+              Eligible records are men or women aged 18–60 with supported
+              category mappings, positive weights, and a nonnegative earnings
+              proxy. Adults over 60 and unsupported records are excluded.
+              Education options are categories, not minimum qualifications.
+            </p>
+          </div>
+          <div>
             <h3>Annualized earnings proxy</h3>
             <p>
               Income is 12 times the reported monthly regular salary or
               self-employment earnings. It is not observed twelve-month income
-              or tax-return income.
+              or tax-return income. Casual wages, investment income and wealth
+              are excluded. Missing salary/self-employment values are treated as
+              zero for this proxy; that does not establish zero total income.
             </p>
           </div>
           <div>
@@ -1013,11 +1042,11 @@ export function Calculator() {
     if (!result) return;
     const displayedFilters = resultFilters ?? filters;
     const label = peopleLabel(displayedFilters.gender);
-    const text = `PLFS-backed 2025 preview: best estimate about ${formatCount(result.estimate.central)} ${label}; 95% uncertainty range ${formatRange(result.estimate.low, result.estimate.high)}. Filters: age ${displayedFilters.ageMin}–${displayedFilters.ageMax}, ${displayedFilters.minIncome === 0 ? "no annualized earnings minimum" : `${incomeFormatter.format(displayedFilters.minIncome)}+ annualized earnings proxy`}, ${displayedFilters.state === "all" ? "All India" : displayedFilters.state}, ${displayedFilters.area}. Range tightness ${result.rangePrecision.score}/100; higher means narrower, not more correct. Height is unavailable and not applied. PLFS usage scope is under review.`;
+    const text = `PLFS-backed 2025 preview: best estimate about ${formatCount(result.estimate.central)} ${label}; 95% uncertainty range ${formatRange(result.estimate.low, result.estimate.high)}. Filters: age ${displayedFilters.ageMin}–${displayedFilters.ageMax}, ${displayedFilters.minIncome === 0 ? "no annualized earnings minimum" : `${incomeFormatter.format(displayedFilters.minIncome)}+ annualized earnings proxy`}, ${displayedFilters.state === "all" ? "All India" : displayedFilters.state}, ${displayedFilters.area}, marital status ${displayedFilters.maritalStatus}, education ${displayedFilters.education}. Comparisons use eligible all-India populations, not only the selected location. Range tightness ${result.rangePrecision.score}/100; higher means narrower, not more correct. Height is unavailable and not applied. PLFS usage scope is under review.`;
     const shareData = {
       title: "India Standards PLFS-backed preview",
       text,
-      url: window.location.href,
+      url: estimateShareUrl(window.location.href, displayedFilters),
     };
 
     try {
@@ -1096,9 +1125,9 @@ export function Calculator() {
           <h1>How many Indian adults match your standards?</h1>
           <p>
             Choose age, earned income, education, location, and other filters.
-            India Standards joins them against aggregate PLFS 2025 data to
-            estimate a weighted count and 95% uncertainty range—not dating
-            success or compatibility.
+            India Standards joins them against eligible ages 18–60 in aggregate
+            PLFS 2025 data to estimate a weighted count and 95% uncertainty
+            range—not dating success or compatibility.
           </p>
         </div>
         <div className="demo-callout">
