@@ -1,6 +1,6 @@
 # India Standards — PROJECT STATUS
 
-Last updated: 2026-09-07
+Last updated: 2026-09-08
 
 ## Current qualification
 
@@ -14,7 +14,16 @@ Local `pnpm test` passes 38 tests, and the complete `pnpm quality` gate passes
 including Cloudflare build, coverage, dependency risk and code-health ratchets.
 One pre-existing unused suppression warning remains in the generated layout.
 
-No deployment or hosted browser qualification occurred. The remaining work is
+The accuracy repairs at `f5312cfbed265c8fd1ee83d7478b18810c56a518` were deployed
+on September 8 as Worker version `d785d399-713a-454a-9e2f-77bcf4c89e87`.
+The hosted page shows the repaired age-scope disclosure, but human verification
+failed to load and no hosted calculation was qualified.
+
+A subsequent waiting-state repair stops claiming an aggregate query is running
+before verification: the result area explains the prerequisite and links to the
+check. A local 390px browser verifies no overflow, `aria-busy=false`, the waiting
+message, and zero estimate requests. All 38 tests and `pnpm quality` pass.
+This waiting-state repair still needs deployment. The remaining work is
 [hosted qualification #35](https://github.com/Significant-Hobbies/india-standards/issues/35)
 and [source activation gates #36](https://github.com/Significant-Hobbies/india-standards/issues/36).
 

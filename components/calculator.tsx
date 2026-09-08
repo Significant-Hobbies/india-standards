@@ -946,7 +946,7 @@ export function Calculator() {
     null
   );
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
   const [usedSharedLinkFallback, setUsedSharedLinkFallback] = useState(false);
   const [resultInView, setResultInView] = useState(true);
@@ -1084,7 +1084,20 @@ export function Calculator() {
         />
       );
     }
-    if (!result) return <LoadingResult />;
+    if (!result) {
+      return (
+        <section className="result-canvas result-message" role="status">
+          <h2>Verify to calculate your estimate</h2>
+          <p>
+            Choose your filters, then complete human verification below. No
+            estimate request has been sent yet.
+          </p>
+          <a className="primary-button" href="#human-verification">
+            Go to verification
+          </a>
+        </section>
+      );
+    }
     return (
       <ResultCanvas
         filters={resultFilters ?? filters}
@@ -1159,21 +1172,35 @@ export function Calculator() {
           filters={filters}
           setFilters={setFilters}
           loading={loading}
-          notice=""
+          notice={
+            !loading && !result
+              ? error
+                ? "Estimate unavailable. Review the message above."
+                : "Waiting for human verification."
+              : ""
+          }
           verification={
-            <TurnstileWidget
-              siteKey={TURNSTILE_SITE_KEY}
-              action="turnstile-spin-v2"
-              resetSignal={turnstileResetSignal}
-              onTokenChange={setTurnstileToken}
-            />
+            <div id="human-verification">
+              <TurnstileWidget
+                siteKey={TURNSTILE_SITE_KEY}
+                action="turnstile-spin-v2"
+                resetSignal={turnstileResetSignal}
+                onTokenChange={setTurnstileToken}
+              />
+            </div>
           }
         />
       </div>
 
       {!resultInView ? (
         <nav className="mobile-jumpbar" aria-label="Calculator shortcut">
-          <a href="#result">{loading ? "Updating…" : "View updated result"}</a>
+          <a href="#result">
+            {loading
+              ? "Updating…"
+              : result
+                ? "View result"
+                : "View verification instructions"}
+          </a>
         </nav>
       ) : null}
 
